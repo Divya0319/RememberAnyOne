@@ -1,0 +1,31 @@
+#Internal package file, do not edit.
+#Sun Aug 19 12:28:01 IST 2018
+2.base=F\:\\AndroidStudioWorkSpace\\Remember AnyOne\\app\\build\\intermediates\\assets\\debug
+5.set=DEX
+0.path=classes.dex
+2.baseType=DIRECTORY
+3.base=F\:\\AndroidStudioWorkSpace\\Remember AnyOne\\app\\build\\intermediates\\assets\\debug
+2.set=ASSET
+1.path=classes.dex
+4.base=F\:\\AndroidStudioWorkSpace\\Remember AnyOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\14
+count=7
+5.baseType=DIRECTORY
+2.path=fonts/CaviarDreams.ttf
+5.base=F\:\\AndroidStudioWorkSpace\\Remember AnyOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\12
+4.set=DEX
+3.path=fonts/Walkway_Oblique_Black.ttf
+6.base=F\:\\AndroidStudioWorkSpace\\Remember AnyOne\\app\\build\\intermediates\\assets\\debug
+3.baseType=DIRECTORY
+1.set=DEX
+4.path=classes.dex
+6.set=ASSET
+1.baseType=DIRECTORY
+6.baseType=DIRECTORY
+5.path=classes.dex
+0.base=F\:\\AndroidStudioWorkSpace\\Remember AnyOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\13
+0.baseType=DIRECTORY
+3.set=ASSET
+6.path=fonts/Exo-Medium.otf
+1.base=F\:\\AndroidStudioWorkSpace\\Remember AnyOne\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\11
+4.baseType=DIRECTORY
+0.set=DEX
