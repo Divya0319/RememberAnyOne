@@ -154,6 +154,7 @@
         android:background="#ffffff"
         android:ems="10"
         android:gravity="center"
+        android:imeOptions="actionDone"
         android:inputType="number"
         android:labelFor="@+id/editTextMobile"
         app:layout_constraintStart_toEndOf="@+id/textViewMobile"
