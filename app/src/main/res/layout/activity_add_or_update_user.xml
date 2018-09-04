@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/capturedImage"
         android:layout_width="120dp"
         android:layout_height="120dp"
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.044" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewCredentials"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.339" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewAge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewAge" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewMobile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewEmail" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tvSelectDOB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewMobile" />
 
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/editTextName"
         android:layout_width="197dp"
         android:layout_height="45dp"
@@ -114,9 +114,9 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewCredentials">
 
         <requestFocus />
-    </EditText>
+    </android.support.v7.widget.AppCompatEditText>
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/editTextAge"
         android:layout_width="197dp"
         android:layout_height="45dp"
@@ -130,7 +130,7 @@
         app:layout_constraintStart_toEndOf="@+id/textViewAge"
         app:layout_constraintTop_toBottomOf="@+id/editTextName" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/editTextEmail"
         android:layout_width="197dp"
         android:layout_height="45dp"
@@ -145,7 +145,7 @@
         app:layout_constraintStart_toEndOf="@+id/textViewEmail"
         app:layout_constraintTop_toBottomOf="@+id/editTextAge" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/editTextMobile"
         android:layout_width="197dp"
         android:layout_height="45dp"
@@ -160,7 +160,7 @@
         app:layout_constraintStart_toEndOf="@+id/textViewMobile"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imgDobSelector"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -171,7 +171,7 @@
         app:layout_constraintStart_toEndOf="@+id/tvSelectDOB"
         app:layout_constraintTop_toBottomOf="@+id/editTextMobile" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewDOB"
         android:layout_width="130dp"
         android:layout_height="45dp"
@@ -181,7 +181,7 @@
         app:layout_constraintStart_toEndOf="@+id/imgDobSelector"
         app:layout_constraintTop_toBottomOf="@+id/editTextMobile" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonCancelIns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonTakePhoto"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
@@ -206,7 +206,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.282" />
 
-    <Button
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonAddOrUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -221,6 +221,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="80dp"
+        android:visibility="gone"
         android:layout_marginTop="144dp"
         android:src="@drawable/image_picker"
         app:layout_constraintEnd_toEndOf="parent"

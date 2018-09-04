@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:id="@+id/constraintLayout4">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textViewWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageViewIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -14,6 +14,8 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 
+import com.fastturtle.RememberAnyOne.Activities.AllUsersListActivity;
+
 public class NotificationHelper {
     private Context mContext;
     private static final String NOTIFICATION_CHANNEL_ID = "user_added_channel";
@@ -27,7 +29,7 @@ public class NotificationHelper {
      * Create and push the notification
      */
     public void createNotification(String title, String message) {
-        Intent resultIntent = new Intent(mContext, AllUsersCustomList.class);
+        Intent resultIntent = new Intent(mContext, AllUsersListActivity.class);
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
