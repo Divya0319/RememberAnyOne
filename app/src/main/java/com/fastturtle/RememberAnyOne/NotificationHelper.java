@@ -12,16 +12,16 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 
-import com.fastturtle.RememberAnyOne.Activities.AllUsersListActivity;
+import com.fastturtle.RememberAnyOne.activities.AllUsersListActivity;
 
 public class NotificationHelper {
     private Context mContext;
     private static final String NOTIFICATION_CHANNEL_ID = "user_added_channel";
     private int notifyId = 1;
 
-    NotificationHelper(Context context) {
+    public NotificationHelper(Context context) {
         mContext = context;
     }
 

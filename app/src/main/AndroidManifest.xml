@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fastturtle.RememberAnyOne"
-    android:versionCode="9"
-    android:versionName="1.1.2.3">
+    package="com.fastturtle.RememberAnyOne">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -20,15 +18,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme">
         <activity
-            android:name="com.fastturtle.RememberAnyOne.Activities.DashBoardActivity"
-            android:label="@string/app_name"
+            android:name="com.fastturtle.RememberAnyOne.activities.DashBoardActivity"
             android:noHistory="true"
             android:screenOrientation="locked"
             android:theme="@style/DashBoardTheme" />
         <activity
-            android:name="com.fastturtle.RememberAnyOne.Activities.SplashActivity"
+            android:name="com.fastturtle.RememberAnyOne.activities.SplashActivity"
             android:screenOrientation="locked"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,14 +34,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.fastturtle.RememberAnyOne.Activities.AllUsersListActivity"
+            android:name="com.fastturtle.RememberAnyOne.activities.AllUsersListActivity"
             android:screenOrientation="locked"
             android:theme="@style/ListViewTheme" />
         <activity
-            android:name="com.fastturtle.RememberAnyOne.Activities.AddUserActivity"
+            android:name="com.fastturtle.RememberAnyOne.activities.AddUserActivity"
             android:screenOrientation="locked"
             android:theme="@style/DashBoardTheme" />
-        <activity android:name="com.fastturtle.RememberAnyOne.Activities.UpdateUserActivity" />
+        <activity android:name="com.fastturtle.RememberAnyOne.activities.UpdateUserActivity" />
 
     </application>
 
