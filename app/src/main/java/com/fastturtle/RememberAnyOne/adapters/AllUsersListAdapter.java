@@ -3,18 +3,19 @@ package com.fastturtle.RememberAnyOne.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
-import com.fastturtle.RememberAnyOne.activities.AddUserActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.fastturtle.RememberAnyOne.R;
 import com.fastturtle.RememberAnyOne.entities.Users;
+import com.fastturtle.RememberAnyOne.helperClasses.Utils;
 
 import java.util.ArrayList;
 
@@ -64,7 +65,7 @@ public class AllUsersListAdapter extends ArrayAdapter<Users> {
         holder.tvAge.setTypeface(typefaceForAll);
         holder.tvDOB.setTypeface(typefaceForAll);
 
-        holder.imgUser.setImageBitmap(AddUserActivity.getImage(u.getImage()));
+        holder.imgUser.setImageBitmap(Utils.getImage(u.getImage()));
         return convertView;
     }
 

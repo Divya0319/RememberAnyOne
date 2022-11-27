@@ -15,11 +15,10 @@ import android.provider.Settings;
 import androidx.core.app.NotificationCompat;
 
 import com.fastturtle.RememberAnyOne.activities.AllUsersListActivity;
+import com.fastturtle.RememberAnyOne.helperClasses.Constants;
 
 public class NotificationHelper {
     private Context mContext;
-    private static final String NOTIFICATION_CHANNEL_ID = "user_added_channel";
-    private int notifyId = 1;
 
     public NotificationHelper(Context context) {
         mContext = context;
@@ -33,14 +32,22 @@ public class NotificationHelper {
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent pIntent = PendingIntent.getActivity(mContext, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, Constants.NOTIFICATION_CHANNEL_ID);
         mBuilder.setSmallIcon(R.drawable.database_icon);
-        mBuilder.setContentTitle(title).setContentText(message).setAutoCancel(false).setSound(Settings.System.DEFAULT_NOTIFICATION_URI).setContentIntent(pIntent).setChannelId(NOTIFICATION_CHANNEL_ID).setPriority(Notification.PRIORITY_HIGH).setDefaults(Notification.DEFAULT_ALL);
+        mBuilder.setAutoCancel(true);
+        mBuilder.setContentTitle(title)
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+                .setContentIntent(pIntent)
+                .setChannelId(Constants.NOTIFICATION_CHANNEL_ID)
+                .setPriority(Notification.PRIORITY_DEFAULT)
+                .setDefaults(Notification.DEFAULT_ALL);
         NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "NOTIFICATION_CHANNEL_NAME", importance);
+            NotificationChannel notificationChannel = new NotificationChannel(Constants.NOTIFICATION_CHANNEL_ID, Constants.NOTIFICATION_CHANNEL_NAME, importance);
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.RED);
             notificationChannel.enableVibration(true);
@@ -50,7 +57,7 @@ public class NotificationHelper {
 
         }
         assert mNotificationManager != null;
-        mNotificationManager.notify(notifyId, mBuilder.build());
+        mNotificationManager.notify(Constants.NOTIFY_ID, mBuilder.build());
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(mContext, notification);

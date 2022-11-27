@@ -14,8 +14,9 @@
     <string name="age_eachuser">Age:</string>
     <string name="mobile_eachuser">Mobile No. :</string>
     <string name="take_photo">Take photo</string>
+    <string name="choose_from_gallery">Choose From Gallery</string>
     <string name="enter_name">Enter Name:</string>
-    <string name="enter_age">Enter Age:</string>
+    <string name="enter_age">Age:</string>
     <string name="enter_email">Enter E-mail:</string>
     <string name="enter_mobno">Enter Mob.No. </string>
     <string name="enter_credentials">Enter Your Credentials</string>
@@ -32,5 +33,6 @@
     <string name="take_new_photo">Take New Photo</string>
     <string name="noUsers">No Users Available</string>
     <string name="options_dot">&#8942;</string>
+    <string name="dashes">--</string>
 
 </resources>

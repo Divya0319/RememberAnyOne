@@ -48,5 +48,14 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon_capture</item>
+        <item name="android:animationDuration">200</item>
+        <!-- Set the theme of the Activity that directly follows your splash screen. -->
+        <!-- Required -->
+        <item name="postSplashScreenTheme">@style/DashBoardTheme</item>
+    </style>
 
 </resources>

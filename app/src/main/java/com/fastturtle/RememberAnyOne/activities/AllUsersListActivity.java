@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,10 +14,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.fastturtle.RememberAnyOne.adapters.AllUsersListAdapter;
-import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.fastturtle.RememberAnyOne.R;
+import com.fastturtle.RememberAnyOne.adapters.AllUsersListAdapter;
 import com.fastturtle.RememberAnyOne.entities.Users;
+import com.fastturtle.RememberAnyOne.helperClasses.Constants;
+import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
+import com.fastturtle.RememberAnyOne.helperClasses.Utils;
 
 import java.util.ArrayList;
 
@@ -53,13 +56,13 @@ public class AllUsersListActivity extends AppCompatActivity {
         if (cursorUser.moveToFirst()) {
             do {
                 Users u = new Users();
-                u.setId(cursorUser.getInt(cursorUser.getColumnIndexOrThrow(myDbHelper.Id)));
-                u.setName(cursorUser.getString(cursorUser.getColumnIndexOrThrow(myDbHelper.Name)));
-                u.setAge(cursorUser.getString(cursorUser.getColumnIndexOrThrow(myDbHelper.Age)));
-                u.setEmail(cursorUser.getString(cursorUser.getColumnIndexOrThrow(myDbHelper.Email)));
-                u.setMobileNo(cursorUser.getString(cursorUser.getColumnIndexOrThrow(myDbHelper.Mobile_No)));
-                u.setDob(cursorUser.getString(cursorUser.getColumnIndexOrThrow(myDbHelper.DOB)));
-                u.setImage(cursorUser.getBlob(cursorUser.getColumnIndexOrThrow(myDbHelper.Key_Image)));
+                u.setId(cursorUser.getInt(cursorUser.getColumnIndexOrThrow(Constants.Id)));
+                u.setName(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Name)));
+                u.setAge(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Age)));
+                u.setEmail(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Email)));
+                u.setMobileNo(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Mobile_No)));
+                u.setDob(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.DOB)));
+                u.setImage(cursorUser.getBlob(cursorUser.getColumnIndexOrThrow(Constants.Key_Image)));
                 userDetails.add(u);
             } while (cursorUser.moveToNext());
         }
@@ -78,7 +81,7 @@ public class AllUsersListActivity extends AppCompatActivity {
                 u.setId(intId);
                 ImageView imageView = view.findViewById(R.id.img);
                 Bitmap bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                byteArray = AddUserActivity.getBytes(bmp);
+                byteArray = Utils.getBytes(bmp);
                 registerForContextMenu(listViewUser);
                 return false;
             }

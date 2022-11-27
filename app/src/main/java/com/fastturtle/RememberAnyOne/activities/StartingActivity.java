@@ -6,7 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fastturtle.RememberAnyOne.R;
 
-public class SplashActivity extends AppCompatActivity {
+public class StartingActivity extends AppCompatActivity {
+	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

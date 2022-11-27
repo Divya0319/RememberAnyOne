@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="splashColor">#48C0D8</color>
+    <color name="splashColor">#D64315</color>
     <color name="listViewColor">#a7a72f</color>
     <color name="dashBoardColor">#3DA2C4</color>
 </resources>

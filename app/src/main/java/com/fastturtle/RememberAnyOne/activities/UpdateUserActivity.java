@@ -1,7 +1,7 @@
 package com.fastturtle.RememberAnyOne.activities;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,39 +10,44 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
-import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.fastturtle.RememberAnyOne.R;
+import com.fastturtle.RememberAnyOne.fragments.DatePickerFragment;
+import com.fastturtle.RememberAnyOne.helperClasses.Constants;
+import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
+import com.fastturtle.RememberAnyOne.helperClasses.Utils;
 
-import java.util.Calendar;
+public class UpdateUserActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
+        DatePickerDialog.OnDateSetListener {
 
-import static com.fastturtle.RememberAnyOne.activities.AddUserActivity.SELECT_PICTURE;
-
-public class UpdateUserActivity extends AppCompatActivity implements View.OnClickListener {
-
-    int year, month, day;
-    AppCompatButton btnUpdate, btnCancel, btnCamera;
-    AppCompatEditText etName, etAge, etEmail, etMobile;
+    AppCompatButton btnUpdate, btnCancel, btnCamera, btSelectImage;
+    AppCompatEditText etName, etEmail, etMobile;
     private static final int CAMERA_REQUEST = 1888;
     DatabaseHelper myDb;
-    AppCompatTextView tvDOB;
+    AppCompatTextView tvDOB, tvAge;
     AppCompatImageView capturedImage, imgDOBSelector;
     String sName, sAge, sEmail, sMobile, sDOB;
     int valAge;
-    AddUserActivity uD;
     Bitmap bitmap;
     int UserId;
-    FloatingActionButton fabSelectImage;
+
+    ActivityResultLauncher<Intent> takePhotoForResult, pickImageFromGalleryForResult;
+
 
     @Override
     public void onBackPressed() {
@@ -57,20 +62,19 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_add_or_update_user);
 
         myDb = new DatabaseHelper(this);
-        uD = new AddUserActivity();
         capturedImage = findViewById(R.id.capturedImage);
 
         Intent i = getIntent();
 
         etName = findViewById(R.id.editTextName);
-        etAge = findViewById(R.id.editTextAge);
+        tvAge = findViewById(R.id.tv_age);
         etEmail = findViewById(R.id.editTextEmail);
         etMobile = findViewById(R.id.editTextMobile);
         tvDOB = findViewById(R.id.textViewDOB);
         btnCamera = findViewById(R.id.buttonTakePhoto);
         btnUpdate = findViewById(R.id.buttonAddOrUpdate);
         btnCancel = findViewById(R.id.buttonCancelIns);
-        fabSelectImage = findViewById(R.id.fabImageSelector);
+        btSelectImage = findViewById(R.id.btImageSelector);
         imgDOBSelector = findViewById(R.id.imgDobSelector);
         btnCamera.setText(getString(R.string.take_new_photo));
         btnUpdate.setText(getString(R.string.update));
@@ -78,27 +82,55 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         btnCamera.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnUpdate.setOnClickListener(this);
-        fabSelectImage.setOnClickListener(this);
+        btSelectImage.setOnClickListener(this);
         imgDOBSelector.setOnClickListener(this);
 
         UserId = i.getExtras().getInt("UserId");
         byte[] byteArrayBmp = i.getByteArrayExtra("BITMAP_SHARED_KEY");
-        bitmap = AddUserActivity.getImage(byteArrayBmp);
+        bitmap = Utils.getImage(byteArrayBmp);
         capturedImage = findViewById(R.id.capturedImage);
         capturedImage.setImageBitmap(bitmap);
         Cursor c = myDb.getAllDataUsingId(UserId);
 
         if (c.moveToFirst()) {
             do {
-                etName.setText(c.getString(c.getColumnIndexOrThrow(myDb.Name)));
-                etAge.setText(c.getString(c.getColumnIndexOrThrow(myDb.Age)));
-                etEmail.setText(c.getString(c.getColumnIndexOrThrow(myDb.Email)));
-                etMobile.setText(c.getString(c.getColumnIndexOrThrow(myDb.Mobile_No)));
-                tvDOB.setText(c.getString(c.getColumnIndexOrThrow(myDb.DOB)));
+                etName.setText(c.getString(c.getColumnIndexOrThrow(Constants.Name)));
+                tvAge.setText(c.getString(c.getColumnIndexOrThrow(Constants.Age)));
+                etEmail.setText(c.getString(c.getColumnIndexOrThrow(Constants.Email)));
+                etMobile.setText(c.getString(c.getColumnIndexOrThrow(Constants.Mobile_No)));
+                tvDOB.setText(c.getString(c.getColumnIndexOrThrow(Constants.DOB)));
 
             } while (c.moveToNext());
         }
         c.close();
+
+        takePhotoForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            bitmap = (Bitmap) result.getData().getExtras().get("data");
+                            capturedImage.setImageBitmap(bitmap);
+                        }
+                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                        Toast.makeText(getApplicationContext(), "User cancelled image capture", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        pickImageFromGalleryForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            Uri selectedImageUri = result.getData().getData();
+                            if (selectedImageUri != null) {
+                                String path = Utils.getPathFromUri(this, selectedImageUri);
+                                Log.d("Image path", path);
+                                capturedImage.setImageURI(selectedImageUri);
+                                BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
+                                bitmap = drawable.getBitmap();
+                            }
+                        }
+                    }
+                });
 
     }
 
@@ -107,15 +139,22 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         if (v.getId() == R.id.buttonTakePhoto) {
             // //camera stuff
             PackageManager pm = getPackageManager();
-            if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+                if (ContextCompat.checkSelfPermission(UpdateUserActivity.this, Constants.CAMERA_PERMISSION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(UpdateUserActivity.this,
+                            new String[]{Constants.CAMERA_PERMISSION}, Constants.RC_CAMERA);
+                } else {
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    takePhotoForResult.launch(cameraIntent);
+                }
+
             } else {
                 Toast.makeText(getBaseContext(), "Camera not available", Toast.LENGTH_LONG).show();
             }
         } else if (v.getId() == R.id.buttonAddOrUpdate) {
             sName = etName.getText().toString();
-            sAge = etAge.getText().toString();
+            sAge = tvAge.getText().toString();
             sEmail = etEmail.getText().toString();
             sMobile = etMobile.getText().toString();
             sDOB = tvDOB.getText().toString();
@@ -124,18 +163,18 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
 
             if (sName.isEmpty() || sAge.isEmpty() || sEmail.isEmpty() || sMobile.isEmpty() || sDOB.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Field is left blank", Toast.LENGTH_SHORT).show();
-            } else if (!uD.validEmail(sEmail)) {
+            } else if (Utils.invalidEmail(sEmail)) {
                 etEmail.setError("Enter valid Email");
             } else if (sMobile.length() != 10) {
                 etMobile.setError("Enter valid Mobile No.");
             } else if (valAge < 15 || valAge > 120) {
-                etAge.setError("Enter age between 15 & 120");
+                tvAge.setError("Age must be between 15 & 120");
             } else {
-                myDb.updateUser(UserId, sName, sAge, sEmail, sMobile, sDOB, AddUserActivity.getBytes(bitmap));
+                myDb.updateUser(UserId, sName, sAge, sEmail, sMobile, sDOB, Utils.getBytes(bitmap));
                 capturedImage.setImageResource(R.drawable.icon_capture);
                 Toast.makeText(getApplicationContext(), "User updated successfully", Toast.LENGTH_LONG).show();
                 etName.setText("");
-                etAge.setText("");
+                tvAge.setText("--");
                 etEmail.setText("");
                 etMobile.setText("");
 
@@ -145,12 +184,14 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             Intent i = new Intent(getApplicationContext(), DashBoardActivity.class);
             startActivity(i);
             finish();
-        } else if (v.getId() == R.id.fabImageSelector) {
-            openImageChooser();
+        } else if (v.getId() == R.id.btImageSelector) {
+                openImageChooser();
         } else if (v.getId() == R.id.imgDobSelector) {
-            select_date();
+            selectDate();
         }
     }
+
+
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -161,7 +202,7 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
 
         } else if (resultCode == RESULT_CANCELED) {
             Toast.makeText(getApplicationContext(), "User cancelled image capture", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == SELECT_PICTURE) {
+        } else if (requestCode == Constants.SELECT_PICTURE) {
             Uri selectedImageUri = data.getData();
             if (selectedImageUri != null) {
                 String path = getPathFromUri(selectedImageUri);
@@ -174,11 +215,8 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
     }
 
     void openImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        // TODO: update deprecated  activity result api
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        pickImageFromGalleryForResult.launch(galleryIntent);
     }
 
     public String getPathFromUri(Uri contentUri) {
@@ -193,33 +231,29 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         return res;
     }
 
-    public void select_date() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
-        // TODO: update deprecated show dialog api
-        showDialog(AddUserActivity.DATE_PICKER_ID);
+    public void selectDate() {
+        DatePickerFragment datePicker = new DatePickerFragment();
+        datePicker.show(getSupportFragmentManager(), "datePicker");
     }
 
-    // TODO: update deprecated create dialog api
+
     @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case AddUserActivity.DATE_PICKER_ID:
-                return new DatePickerDialog(this, pickerListener, year, month, day);
-        }
-        return super.onCreateDialog(id);
+    public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+        tvDOB.setText(new StringBuilder().append(dayOfMonth).append("-").append(monthOfYear).append("-").append(year));
+        tvAge.setText(Utils.findAge(year, monthOfYear, dayOfMonth));
+
     }
 
-    private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDayOfMonth) {
-            year = selectedYear;
-            month = selectedMonth;
-            day = selectedDayOfMonth;
-            tvDOB.setText(new StringBuilder().append(day).append("-").append(month + 1).append("-").append(year));
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == Constants.RC_CAMERA) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                takePhotoForResult.launch(cameraIntent);
+            } else {
+                Toast.makeText(this, "Camera permission was not granted", Toast.LENGTH_SHORT).show();
+            }
         }
-    };
-
+    }
 }

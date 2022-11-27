@@ -7,8 +7,6 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -20,19 +18,27 @@
         <activity
             android:name="com.fastturtle.RememberAnyOne.activities.DashBoardActivity"
             android:noHistory="true"
+            android:exported="true"
             android:screenOrientation="locked"
-            android:theme="@style/DashBoardTheme" />
+            android:theme="@style/Theme.App.Starting" >
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+        </activity>
         <activity
-            android:name="com.fastturtle.RememberAnyOne.activities.SplashActivity"
+            android:name="com.fastturtle.RememberAnyOne.activities.StartingActivity"
             android:screenOrientation="locked"
             android:theme="@style/SplashTheme"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            >
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
+
         <activity
             android:name="com.fastturtle.RememberAnyOne.activities.AllUsersListActivity"
             android:screenOrientation="locked"
