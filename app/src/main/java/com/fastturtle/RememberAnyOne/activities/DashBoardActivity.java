@@ -22,6 +22,8 @@ public class DashBoardActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        btAdd = findViewById(R.id.buttonAddUser);
+        btView = findViewById(R.id.buttonViewUser);
         btAdd.setOnClickListener(this);
         btView.setOnClickListener(this);
 
