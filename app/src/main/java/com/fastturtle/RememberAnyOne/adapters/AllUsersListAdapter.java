@@ -1,8 +1,16 @@
 package com.fastturtle.RememberAnyOne.adapters;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +25,9 @@ import com.fastturtle.RememberAnyOne.R;
 import com.fastturtle.RememberAnyOne.entities.Users;
 import com.fastturtle.RememberAnyOne.helperClasses.Utils;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class AllUsersListAdapter extends ArrayAdapter<Users> {
@@ -65,7 +76,23 @@ public class AllUsersListAdapter extends ArrayAdapter<Users> {
         holder.tvAge.setTypeface(typefaceForAll);
         holder.tvDOB.setTypeface(typefaceForAll);
 
-        holder.imgUser.setImageBitmap(Utils.getImage(u.getImage()));
+        Uri fetchedImageUri = Uri.parse(u.getImagePathUri());
+        Log.d("FileURI", fetchedImageUri.toString());
+        try {
+            if (fetchedImageUri != null) {
+                ContentResolver cr = context.getContentResolver();
+                InputStream is = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    holder.imgUser.setImageBitmap(ImageDecoder.decodeBitmap(ImageDecoder.createSource(cr, fetchedImageUri)));
+                } else {
+                    holder.imgUser.setImageBitmap(MediaStore.Images.Media.getBitmap(cr, fetchedImageUri));
+                }
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return convertView;
     }
 

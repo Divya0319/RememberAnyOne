@@ -8,7 +8,7 @@ public class Users {
     private String MobileNo;
     private String Age;
     private String dob;
-    private byte[] image;
+    private String imagePathUri;
 
     public int getId() {
         return Id;
@@ -50,12 +50,12 @@ public class Users {
         Age = age;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImagePathUri() {
+        return imagePathUri;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImagePathUri(String imagePathUri) {
+        this.imagePathUri = imagePathUri;
     }
 
     public String getDob() {

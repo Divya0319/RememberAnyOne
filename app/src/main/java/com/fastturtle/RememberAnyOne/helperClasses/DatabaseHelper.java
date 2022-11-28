@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + Constants.Table_Name + " (" + Constants.Id + " INTEGER PRIMARY KEY AUTOINCREMENT," + Constants.Name + " TEXT,"
-                + Constants.Age + " INTEGER," + Constants.Email + " TEXT," + Constants.Mobile_No + " INTEGER," + Constants.DOB + " TEXT," + Constants.Key_Image + " BLOB);");
+                + Constants.Age + " INTEGER," + Constants.Email + " TEXT," + Constants.Mobile_No + " INTEGER," + Constants.DOB + " TEXT," + Constants.Key_Image + " TEXT);");
     }
 
     @Override
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertData(String name, String age, String email, String mobno, String dob, byte[] image) {
+    public void insertData(String name, String age, String email, String mobno, String dob, String imagePathUri) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(Constants.Name, name);
@@ -32,22 +32,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(Constants.Email, email);
         cv.put(Constants.Mobile_No, mobno);
         cv.put(Constants.DOB, dob);
-        cv.put(Constants.Key_Image, image);
+        cv.put(Constants.Key_Image, imagePathUri);
         db.insert(Constants.Table_Name, null, cv);
         db.close();
     }
 
     public Cursor getAllData() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + Constants.Table_Name, null);
-        return res;
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + Constants.Table_Name, null);
     }
 
     public Cursor getAllDataUsingId(int Uid) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(" SELECT * FROM " + Constants.Table_Name + " WHERE " + Constants.Id + " = " + Uid + " ", null);
-        return c;
+        return db.rawQuery(" SELECT * FROM " + Constants.Table_Name + " WHERE " + Constants.Id + " = " + Uid + " ", null);
 
     }
 
@@ -57,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateUser(int id, String name, String age, String email, String mobno, String dob, byte[] image) {
+    public void updateUser(int id, String name, String age, String email, String mobno, String dob, String imagePathUri) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         String strFilter = Constants.Id + "=" + id;
@@ -66,11 +64,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(Constants.Email, email);
         cv.put(Constants.Mobile_No, mobno);
         cv.put(Constants.DOB, dob);
-        cv.put(Constants.Key_Image, image);
+        cv.put(Constants.Key_Image, imagePathUri);
         db.update(Constants.Table_Name, cv, strFilter, null);
+        db.close();
     }
 
-    public boolean CheckDuplicateUser(String newEmail) {
+    public boolean checkDuplicateUser(String newEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         boolean response = false;
         Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.Table_Name + " WHERE " + Constants.Email + " = ?",
@@ -83,6 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         if(cursor != null)
             cursor.close();
+        db.close();
         return response;
     }
 

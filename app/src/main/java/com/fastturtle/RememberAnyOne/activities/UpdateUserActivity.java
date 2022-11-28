@@ -2,15 +2,16 @@ package com.fastturtle.RememberAnyOne.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.fastturtle.RememberAnyOne.R;
 import com.fastturtle.RememberAnyOne.fragments.DatePickerFragment;
@@ -32,19 +33,28 @@ import com.fastturtle.RememberAnyOne.helperClasses.Constants;
 import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
 import com.fastturtle.RememberAnyOne.helperClasses.Utils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class UpdateUserActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
         DatePickerDialog.OnDateSetListener {
 
     AppCompatButton btnUpdate, btnCancel, btnCamera, btSelectImage;
     AppCompatEditText etName, etEmail, etMobile;
-    private static final int CAMERA_REQUEST = 1888;
     DatabaseHelper myDb;
     AppCompatTextView tvDOB, tvAge;
     AppCompatImageView capturedImage, imgDOBSelector;
     String sName, sAge, sEmail, sMobile, sDOB;
     int valAge;
-    Bitmap bitmap;
-    int UserId;
+    int userId;
+    String imageUri;
+    String imageFilePath;
+    Uri capturedImageUri;
 
     ActivityResultLauncher<Intent> takePhotoForResult, pickImageFromGalleryForResult;
 
@@ -85,12 +95,9 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         btSelectImage.setOnClickListener(this);
         imgDOBSelector.setOnClickListener(this);
 
-        UserId = i.getExtras().getInt("UserId");
-        byte[] byteArrayBmp = i.getByteArrayExtra("BITMAP_SHARED_KEY");
-        bitmap = Utils.getImage(byteArrayBmp);
+        userId = i.getExtras().getInt("UserId");
         capturedImage = findViewById(R.id.capturedImage);
-        capturedImage.setImageBitmap(bitmap);
-        Cursor c = myDb.getAllDataUsingId(UserId);
+        Cursor c = myDb.getAllDataUsingId(userId);
 
         if (c.moveToFirst()) {
             do {
@@ -99,18 +106,61 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
                 etEmail.setText(c.getString(c.getColumnIndexOrThrow(Constants.Email)));
                 etMobile.setText(c.getString(c.getColumnIndexOrThrow(Constants.Mobile_No)));
                 tvDOB.setText(c.getString(c.getColumnIndexOrThrow(Constants.DOB)));
+                imageUri = c.getString(c.getColumnIndexOrThrow(Constants.Key_Image));
 
             } while (c.moveToNext());
         }
         c.close();
+        capturedImageUri = Uri.parse(imageUri);
+        if(capturedImageUri.toString().contains("fileprovider")) {
+            ContentResolver cr = getContentResolver();
+            InputStream is = null;
+            try {
+                is = cr.openInputStream(capturedImageUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            capturedImage.setImageBitmap(bitmap);
+        }
+//        else {
+//            if (capturedImageUri != null) {
+//                String path = Utils.getPathFromUri(this, capturedImageUri);
+//                BitmapFactory.Options options = new BitmapFactory.Options();
+//                options.inSampleSize = 8;
+//                Bitmap bitmap = BitmapFactory.decodeFile(path);
+//                capturedImage.setImageBitmap(bitmap);
+//            }
+//        }
+
+
 
         takePhotoForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (result.getData() != null) {
-                            bitmap = (Bitmap) result.getData().getExtras().get("data");
-                            capturedImage.setImageBitmap(bitmap);
+                        ContentResolver cr = getApplicationContext().getContentResolver();
+                        InputStream is = null;
+                        try {
+                            is = cr.openInputStream(capturedImageUri);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
                         }
+                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        if (is != null) {
+                            try {
+                                is.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        capturedImage.setImageBitmap(bitmap);
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                         Toast.makeText(getApplicationContext(), "User cancelled image capture", Toast.LENGTH_SHORT).show();
                     }
@@ -123,10 +173,10 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
                             Uri selectedImageUri = result.getData().getData();
                             if (selectedImageUri != null) {
                                 String path = Utils.getPathFromUri(this, selectedImageUri);
-                                Log.d("Image path", path);
-                                capturedImage.setImageURI(selectedImageUri);
-                                BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
-                                bitmap = drawable.getBitmap();
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inSampleSize = 8;
+                                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                                capturedImage.setImageBitmap(bitmap);
                             }
                         }
                     }
@@ -140,13 +190,25 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             // //camera stuff
             PackageManager pm = getPackageManager();
             if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-                if (ContextCompat.checkSelfPermission(UpdateUserActivity.this, Constants.CAMERA_PERMISSION)
-                        != PackageManager.PERMISSION_GRANTED) {
+                if (Utils.notHavePermissions(this, Constants.CAMERA_PERMISSIONS)) {
                     ActivityCompat.requestPermissions(UpdateUserActivity.this,
-                            new String[]{Constants.CAMERA_PERMISSION}, Constants.RC_CAMERA);
+                            new String[]{Constants.CAMERA_PERMISSIONS}, Constants.RC_CAMERA);
                 } else {
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    takePhotoForResult.launch(cameraIntent);
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (photoFile != null) {
+                        Uri photoUri = FileProvider.getUriForFile(this,
+                                "com.fastturtle.RememberAnyOne.fileprovider", photoFile);
+                        capturedImageUri = photoUri;
+
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                        takePhotoForResult.launch(cameraIntent);
+                    }
                 }
 
             } else {
@@ -170,13 +232,15 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             } else if (valAge < 15 || valAge > 120) {
                 tvAge.setError("Age must be between 15 & 120");
             } else {
-                myDb.updateUser(UserId, sName, sAge, sEmail, sMobile, sDOB, Utils.getBytes(bitmap));
+                myDb.updateUser(userId, sName, sAge, sEmail, sMobile, sDOB, capturedImageUri.toString());
                 capturedImage.setImageResource(R.drawable.icon_capture);
                 Toast.makeText(getApplicationContext(), "User updated successfully", Toast.LENGTH_LONG).show();
                 etName.setText("");
                 tvAge.setText("--");
                 etEmail.setText("");
                 etMobile.setText("");
+
+                onBackPressed();
 
             }
 
@@ -185,50 +249,20 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             startActivity(i);
             finish();
         } else if (v.getId() == R.id.btImageSelector) {
+            if (Utils.notHavePermissions(this, Constants.CAMERA_PERMISSIONS)) {
+                ActivityCompat.requestPermissions(UpdateUserActivity.this,
+                        new String[]{Constants.CAMERA_PERMISSIONS}, Constants.RC_CAMERA);
+            } else {
                 openImageChooser();
+            }
         } else if (v.getId() == R.id.imgDobSelector) {
             selectDate();
-        }
-    }
-
-
-
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            bitmap = (Bitmap) data.getExtras().get("data");
-            capturedImage.setImageBitmap(bitmap);
-
-        } else if (resultCode == RESULT_CANCELED) {
-            Toast.makeText(getApplicationContext(), "User cancelled image capture", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == Constants.SELECT_PICTURE) {
-            Uri selectedImageUri = data.getData();
-            if (selectedImageUri != null) {
-                String path = getPathFromUri(selectedImageUri);
-                Log.i("AddUserActivity", "Image Path : " + path);
-                capturedImage.setImageURI(selectedImageUri);
-                BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
-                bitmap = drawable.getBitmap();
-            }
         }
     }
 
     void openImageChooser() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         pickImageFromGalleryForResult.launch(galleryIntent);
-    }
-
-    public String getPathFromUri(Uri contentUri) {
-        String res = null;
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor.moveToFirst()) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor.getString(column_index);
-        }
-        cursor.close();
-        return res;
     }
 
     public void selectDate() {
@@ -240,7 +274,19 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         tvDOB.setText(new StringBuilder().append(dayOfMonth).append("-").append(monthOfYear).append("-").append(year));
-        tvAge.setText(Utils.findAge(year, monthOfYear, dayOfMonth));
+        tvAge.setText(String.valueOf(Utils.findAge(year, monthOfYear, dayOfMonth)));
+
+    }
+
+    public File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
+
+        File storageFile = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(timeStamp,
+                ".jpg",
+                storageFile);
+        imageFilePath = image.getAbsolutePath();
+        return image;
 
     }
 
@@ -250,9 +296,29 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         if (requestCode == Constants.RC_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePhotoForResult.launch(cameraIntent);
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (photoFile != null) {
+                    Uri photoUri = FileProvider.getUriForFile(this,
+                            "com.fastturtle.RememberAnyOne.fileprovider", photoFile);
+                    capturedImageUri = photoUri;
+
+                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                    takePhotoForResult.launch(cameraIntent);
+                }
+
             } else {
                 Toast.makeText(this, "Camera permission was not granted", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == Constants.RC_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openImageChooser();
+            } else {
+                Toast.makeText(this, "Storage permission was not granted", Toast.LENGTH_SHORT).show();
             }
         }
     }

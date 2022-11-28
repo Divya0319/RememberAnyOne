@@ -1,12 +1,15 @@
 package com.fastturtle.RememberAnyOne.helperClasses;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Patterns;
+
+import androidx.core.app.ActivityCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
@@ -34,14 +37,14 @@ public class Utils {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = ctx.getContentResolver().query(contentUri, proj, null, null, null);
         if (cursor.moveToFirst()) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
             res = cursor.getString(column_index);
         }
         cursor.close();
         return res;
     }
 
-    public static String findAge(int DOBYear, int DOBMonth, int DOBDayOfMonth) {
+    public static int findAge(int DOBYear, int DOBMonth, int DOBDayOfMonth) {
 
         int age;
         final Calendar calendarToday = Calendar.getInstance();
@@ -58,7 +61,19 @@ public class Utils {
                 --age;
             }
         }
-        return String.valueOf(age);
+        return age;
 
+    }
+
+    public static boolean notHavePermissions(Context ctx, String... permissions) {
+        if(permissions != null) {
+            for(String permission: permissions) {
+                if(ActivityCompat.checkSelfPermission(ctx, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
