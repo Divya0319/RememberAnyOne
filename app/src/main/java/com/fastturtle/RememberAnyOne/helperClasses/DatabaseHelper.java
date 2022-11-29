@@ -39,15 +39,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + Constants.Table_Name, null);
-        return res;
+        return db.rawQuery("SELECT * FROM " + Constants.Table_Name, null);
     }
 
     public Cursor getAllDataUsingId(int Uid) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(" SELECT * FROM " + Constants.Table_Name + " WHERE " + Constants.Id + " = " + Uid + " ", null);
-        return c;
+        return db.rawQuery(" SELECT * FROM " + Constants.Table_Name + " WHERE " + Constants.Id + " = " + Uid + " ", null);
 
     }
 
@@ -70,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.update(Constants.Table_Name, cv, strFilter, null);
     }
 
-    public boolean CheckDuplicateUser(String newEmail) {
+    public boolean checkDuplicateUser(String newEmail) {
         SQLiteDatabase db = this.getReadableDatabase();
         boolean response = false;
         Cursor cursor = db.rawQuery("SELECT * FROM " + Constants.Table_Name + " WHERE " + Constants.Email + " = ?",

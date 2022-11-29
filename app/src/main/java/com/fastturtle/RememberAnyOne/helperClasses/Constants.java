@@ -24,5 +24,6 @@ public interface Constants {
     String Mobile_No = "MobNo";
     String DOB = "Dob";
     String Key_Image = "key_image";
+    boolean onCreateOfUpdateActivityCalledFirstTime = true;
 
 }

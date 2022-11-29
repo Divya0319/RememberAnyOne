@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
+    public static boolean onCreateOfUpdateScreenCalledFirstTime = true;
+
     public static boolean invalidEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return !pattern.matcher(email).matches();

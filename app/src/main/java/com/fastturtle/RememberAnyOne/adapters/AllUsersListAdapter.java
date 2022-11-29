@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.fastturtle.RememberAnyOne.R;
 import com.fastturtle.RememberAnyOne.entities.Users;
@@ -29,7 +30,7 @@ public class AllUsersListAdapter extends ArrayAdapter<Users> {
         super(context, R.layout.list_single, userDetails);
         this.context = context;
         this.uDetails = userDetails;
-        typefaceForAll = Typeface.createFromAsset(context.getAssets(), "fonts/Exo-Medium.otf");
+        typefaceForAll = ResourcesCompat.getFont(context, R.font.exo_medium);
     }
 
     @NonNull

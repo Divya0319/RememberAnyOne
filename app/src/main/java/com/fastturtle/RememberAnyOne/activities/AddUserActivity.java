@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
@@ -37,7 +37,7 @@ import com.fastturtle.RememberAnyOne.helperClasses.Utils;
 public class AddUserActivity extends AppCompatActivity implements OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
         DatePickerDialog.OnDateSetListener {
 
-    AppCompatButton btnAdd, btnCancel, btnCamera, btSelectImage;
+    AppCompatButton btnAdd, btnCancel, btnCamera;
     AppCompatImageView capturedImage, imgCalendarIcon;
     AppCompatEditText etName, etEmail, etMobile;
     AppCompatTextView tvDOB, tvAge;
@@ -45,7 +45,7 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
     String sName, sAge, sEmail, sMobile, sDOB;
     int valAge;
     Drawable oldDrawable;
-    Bitmap bitmap;
+    Bitmap bitmap, bitmapFromImageView;
     NotificationHelper notificationHelper;
 
     ActivityResultLauncher<Intent> takePhotoForResult, pickImageFromGalleryForResult;
@@ -62,6 +62,43 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
     }
 
     @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        bitmapFromImageView = ((BitmapDrawable)capturedImage.getDrawable()).getBitmap();
+        if (bitmapFromImageView != null)
+            outState.putByteArray("bitmap", Utils.getBytes(bitmapFromImageView));
+        if (!TextUtils.isEmpty(etName.getText()))
+            outState.putString("name", etName.getText().toString());
+        if (!TextUtils.isEmpty(tvDOB.getText()))
+            outState.putString("dob", tvDOB.getText().toString());
+        if (!TextUtils.isEmpty(tvAge.getText()) && !tvAge.getText().toString().equals("--"))
+            outState.putString("age", tvAge.getText().toString());
+        if (!TextUtils.isEmpty(etEmail.getText()))
+            outState.putString("email", etEmail.getText().toString());
+        if (!TextUtils.isEmpty(etMobile.getText()))
+            outState.putString("mobno", etMobile.getText().toString());
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("bitmap"))
+            bitmap = Utils.getImage(savedInstanceState.getByteArray("bitmap"));
+            capturedImage.setImageBitmap(bitmap);
+        if (savedInstanceState.containsKey("name"))
+            etName.setText(savedInstanceState.getString("name"));
+        if (savedInstanceState.containsKey("dob"))
+            tvDOB.setText(savedInstanceState.getString("dob"));
+        if (savedInstanceState.containsKey("age"))
+            tvAge.setText(savedInstanceState.getString("age"));
+        if (savedInstanceState.containsKey("email"))
+            etEmail.setText(savedInstanceState.getString("email"));
+        if (savedInstanceState.containsKey("mobno"))
+            etMobile.setText(savedInstanceState.getString("mobno"));
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_or_update_user);
@@ -75,7 +112,6 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
         btnCamera = findViewById(R.id.buttonTakePhoto);
         btnAdd = findViewById(R.id.buttonAddOrUpdate);
         btnCancel = findViewById(R.id.buttonCancelIns);
-        btSelectImage = findViewById(R.id.btImageSelector);
         imgCalendarIcon = findViewById(R.id.imgDobSelector);
         capturedImage = findViewById(R.id.capturedImage);
         oldDrawable = capturedImage.getDrawable();
@@ -84,7 +120,6 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
         btnCamera.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         imgCalendarIcon.setOnClickListener(this);
-        btSelectImage.setOnClickListener(this);
 
         btnAdd.setText(getString(R.string.add));
 
@@ -106,8 +141,6 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
                         if (result.getData() != null) {
                             Uri selectedImageUri = result.getData().getData();
                             if (selectedImageUri != null) {
-                                String path = Utils.getPathFromUri(this, selectedImageUri);
-                                Log.d("Image path", path);
                                 capturedImage.setImageURI(selectedImageUri);
                                 BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
                                 bitmap = drawable.getBitmap();
@@ -126,7 +159,7 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
             sEmail = etEmail.getText().toString();
             sMobile = etMobile.getText().toString();
             sDOB = tvDOB.getText().toString();
-            if (!sAge.isEmpty())
+            if (!sAge.isEmpty() && !sAge.equals("--"))
                 valAge = Integer.parseInt(sAge);
 
             if (sName.isEmpty() || sAge.isEmpty() || sEmail.isEmpty() || sMobile.isEmpty() || sDOB.isEmpty()) {
@@ -138,7 +171,7 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
             } else if (valAge < 15 || valAge > 120) {
                 tvAge.requestFocus();
                 tvAge.setError("Age must be between 15 & 120");
-            } else if (myDb.CheckDuplicateUser(sEmail)) {
+            } else if (myDb.checkDuplicateUser(sEmail)) {
                 Toast.makeText(getApplicationContext(), "Email already exists", Toast.LENGTH_SHORT).show();
             } else if (capturedImage.getDrawable() == oldDrawable) {
                 Toast.makeText(getApplicationContext(), "Please click on " + "\"Take Photo\"" + " Button to click photo", Toast.LENGTH_LONG).show();
@@ -152,6 +185,8 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
                 etEmail.setText("");
                 etMobile.setText("");
                 tvDOB.setText("");
+                bitmap = null;
+                bitmapFromImageView = null;
             }
 
         } else if (v.getId() == R.id.buttonCancelIns) {
@@ -176,8 +211,6 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
                 Toast.makeText(getBaseContext(), "Camera not available", Toast.LENGTH_LONG).show();
             }
 
-        } else if (v.getId() == R.id.btImageSelector) {
-            openImageChooser();
         } else if (v.getId() == R.id.imgDobSelector) {
             selectDate();
         }
