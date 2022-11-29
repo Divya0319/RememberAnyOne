@@ -4,11 +4,11 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.fastturtle.RememberAnyOne"
+        applicationId "com.fastturtle.rememberme"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 9
-        versionName "1.1.2.3"
+        versionCode 10
+        versionName "1.2.0.0"
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8

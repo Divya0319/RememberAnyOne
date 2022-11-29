@@ -15,6 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keepclassmembers class com.fastturtle.RememberAnyOne.entities.** { *; }
--keepclassmembers class com.fastturtle.RememberAnyOne.activities.** { *; }
+-keepclassmembers class com.fastturtle.rememberMe.entities.** { *; }
+-keepclassmembers class com.fastturtle.rememberMe.activities.** { *; }
 -keepattributes *Annotation*, Signature, Exception

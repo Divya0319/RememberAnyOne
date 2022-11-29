@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.helperClasses;
+package com.fastturtle.rememberMe.helperClasses;
 
 import android.content.Context;
 import android.database.Cursor;

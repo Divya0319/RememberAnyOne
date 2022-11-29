@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.entities;
+package com.fastturtle.rememberMe.entities;
 
 public class Users {
 

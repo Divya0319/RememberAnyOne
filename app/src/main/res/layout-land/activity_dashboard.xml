@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient"
-    tools:context="com.fastturtle.RememberAnyOne.activities.DashBoardActivity">
+    tools:context="com.fastturtle.rememberMe.activities.DashBoardActivity">
 
 
     <androidx.appcompat.widget.AppCompatTextView

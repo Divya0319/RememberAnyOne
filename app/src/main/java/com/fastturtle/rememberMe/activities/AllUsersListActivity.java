@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.activities;
+package com.fastturtle.rememberMe.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,12 +18,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.fastturtle.RememberAnyOne.R;
-import com.fastturtle.RememberAnyOne.adapters.AllUsersListAdapter;
-import com.fastturtle.RememberAnyOne.entities.Users;
-import com.fastturtle.RememberAnyOne.helperClasses.Constants;
-import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
-import com.fastturtle.RememberAnyOne.helperClasses.Utils;
+import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.adapters.AllUsersListAdapter;
+import com.fastturtle.rememberMe.entities.Users;
+import com.fastturtle.rememberMe.helperClasses.Constants;
+import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;
+import com.fastturtle.rememberMe.helperClasses.Utils;
 
 import java.util.ArrayList;
 

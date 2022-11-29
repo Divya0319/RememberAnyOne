@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.helperClasses;
+package com.fastturtle.rememberMe.helperClasses;
 
 public interface Constants {
     int SELECT_PICTURE = 100;

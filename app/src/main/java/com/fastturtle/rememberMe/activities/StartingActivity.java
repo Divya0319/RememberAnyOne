@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.activities;
+package com.fastturtle.rememberMe.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.fastturtle.RememberAnyOne.R;
+import com.fastturtle.rememberme.R;
 
 public class StartingActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.adapters;
+package com.fastturtle.rememberMe.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,9 +14,9 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.fastturtle.RememberAnyOne.R;
-import com.fastturtle.RememberAnyOne.entities.Users;
-import com.fastturtle.RememberAnyOne.helperClasses.Utils;
+import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.entities.Users;
+import com.fastturtle.rememberMe.helperClasses.Utils;
 
 import java.util.ArrayList;
 

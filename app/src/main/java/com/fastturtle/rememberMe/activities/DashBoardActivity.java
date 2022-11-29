@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.activities;
+package com.fastturtle.rememberMe.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.fastturtle.RememberAnyOne.R;
+import com.fastturtle.rememberme.R;
 
 
 public class DashBoardActivity extends AppCompatActivity implements View.OnClickListener {
