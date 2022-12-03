@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "468753635855",
+    "project_id": "remember-anyone",
+    "storage_bucket": "remember-anyone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468753635855:android:862c5db88c182e13ea217a",
+        "android_client_info": {
+          "package_name": "com.fastturtle.rememberme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "468753635855-3gkqbi55uep8favobe0u9s8vv0akeh5q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fastturtle.rememberme",
+            "certificate_hash": "0eabfabbcc7aed4e24f3428a245af9274ec368ce"
+          }
+        },
+        {
+          "client_id": "468753635855-viqqvp905epnoari83mqtfmve18o00o3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fastturtle.rememberme",
+            "certificate_hash": "377eaf664505fb643cbfffdaa676ffa447c24bc7"
+          }
+        },
+        {
+          "client_id": "468753635855-5a6fdqg12khrobuov48lhptqe5cvg2q7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArydH6wFudbw8INhl0ALBjD70HlAEDRKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "468753635855-5a6fdqg12khrobuov48lhptqe5cvg2q7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

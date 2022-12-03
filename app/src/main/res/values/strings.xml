@@ -35,5 +35,12 @@
     <string name="options_dot">&#8942;</string>
     <string name="dashes">--</string>
     <string name="remember_any_one">Remember Any One</string>
+    <string name="zero">0</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="verify">Verify</string>
+    <string name="login_with_nmobile_number">Login with \nMobile number</string>
+    <string name="plus_91">+91</string>
+    <string name="type_your_number">Type your number</string>
+    <string name="send_otp">Send otp</string>
 
 </resources>

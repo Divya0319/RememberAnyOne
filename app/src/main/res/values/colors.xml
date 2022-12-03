@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#5471C7</color>
+    <color name="colorPrimaryDark">#18448F</color>
+    <color name="colorAccent">#6B94D2</color>
     <color name="splashColor">#2196F3</color>
     <color name="listViewColor">#a7a72f</color>
     <color name="dashBoardColor">#3DA2C4</color>
     <color name="dark_blue">#121E64</color>
     <color name="listViewColorLight">#C19240</color>
     <color name="white">#FFFFFF</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+
+    <color name="btn_color">#FF735C</color>
+    <color name="edit_text_color">#FFD6CF</color>
+    <color name="hint_text_color">#D4D4D4</color>
 </resources>
