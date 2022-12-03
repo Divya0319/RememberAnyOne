@@ -4,11 +4,11 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.fastturtle.RememberAnyOne"
+        applicationId "com.fastturtle.rememberme"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 9
-        versionName "1.1.2.3"
+        versionCode 10
+        versionName "1.2.0.0"
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
@@ -17,7 +17,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
@@ -29,10 +30,4 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.cardview:cardview:1.0.0'
-
-    // Splash screen api
-    implementation 'androidx.core:core-splashscreen:1.0.0'
-
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 }

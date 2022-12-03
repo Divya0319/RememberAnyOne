@@ -34,5 +34,6 @@
     <string name="noUsers">No Users Available</string>
     <string name="options_dot">&#8942;</string>
     <string name="dashes">--</string>
+    <string name="remember_any_one">Remember Any One</string>
 
 </resources>

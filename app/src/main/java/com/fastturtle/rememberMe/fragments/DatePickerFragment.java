@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.fragments;
+package com.fastturtle.rememberMe.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

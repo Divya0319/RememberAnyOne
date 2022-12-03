@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.entities;
+package com.fastturtle.rememberMe.entities;
 
 public class Users {
 
@@ -8,7 +8,7 @@ public class Users {
     private String MobileNo;
     private String Age;
     private String dob;
-    private String imagePathUri;
+    private byte[] image;
 
     public int getId() {
         return Id;
@@ -50,12 +50,12 @@ public class Users {
         Age = age;
     }
 
-    public String getImagePathUri() {
-        return imagePathUri;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setImagePathUri(String imagePathUri) {
-        this.imagePathUri = imagePathUri;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public String getDob() {

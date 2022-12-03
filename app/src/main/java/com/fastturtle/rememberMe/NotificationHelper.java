@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne;
+package com.fastturtle.rememberMe;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,8 +14,9 @@ import android.os.Build;
 import android.provider.Settings;
 import androidx.core.app.NotificationCompat;
 
-import com.fastturtle.RememberAnyOne.activities.AllUsersListActivity;
-import com.fastturtle.RememberAnyOne.helperClasses.Constants;
+import com.fastturtle.rememberMe.activities.AllUsersListActivity;
+import com.fastturtle.rememberMe.helperClasses.Constants;
+import com.fastturtle.rememberme.R;
 
 public class NotificationHelper {
     private Context mContext;

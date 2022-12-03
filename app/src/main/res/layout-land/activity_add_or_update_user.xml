@@ -9,16 +9,15 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/capturedImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
         android:contentDescription="@string/app_name"
         android:scaleType="fitXY"
         android:src="@drawable/icon_capture"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="54dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,19 +25,17 @@
         android:id="@+id/textViewCredentials"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="100dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/enter_credentials"
-        android:textStyle="bold"
         android:fontFamily="sans-serif-smallcaps"
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold"
+        android:text="@string/enter_credentials"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.339" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textViewName"
@@ -48,7 +45,7 @@
         android:text="@string/enter_name"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintBottom_toBottomOf="@id/editTextName"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/capturedImage"
         app:layout_constraintTop_toTopOf="@id/editTextName" />
 
 
@@ -76,22 +73,20 @@
         android:id="@+id/textViewMobile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:text="@string/enter_mobno"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintBottom_toBottomOf="@id/editTextMobile"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/textViewName"
         app:layout_constraintTop_toTopOf="@+id/editTextMobile" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvSelectDOB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
         android:text="@string/select_dob"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintBottom_toBottomOf="@id/imgDobSelector"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/textViewName"
         app:layout_constraintTop_toTopOf="@+id/imgDobSelector" />
 
 
@@ -107,7 +102,6 @@
         android:gravity="center"
         android:inputType="text"
         android:labelFor="@+id/editTextName"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textViewName"
         app:layout_constraintTop_toBottomOf="@+id/textViewCredentials">
 
@@ -121,14 +115,13 @@
         android:layout_marginStart="23dp"
         android:layout_marginTop="20dp"
         android:ems="8"
-        android:background="#ffffff"
         android:gravity="center"
-        android:text="@string/dashes"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:text="@string/dashes"
+        android:background="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textViewName"
         app:layout_constraintTop_toBottomOf="@+id/imgDobSelector" />
 
@@ -143,7 +136,6 @@
         android:gravity="center"
         android:inputType="textEmailAddress"
         android:labelFor="@+id/editTextEmail"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textViewName"
         app:layout_constraintTop_toBottomOf="@+id/tv_age" />
 
@@ -151,15 +143,14 @@
         android:id="@+id/editTextMobile"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginTop="20dp"
         android:layout_marginStart="23dp"
+        android:layout_marginTop="20dp"
         android:background="#ffffff"
         android:ems="10"
         android:gravity="center"
         android:imeOptions="actionDone"
         android:inputType="number"
         android:labelFor="@+id/editTextMobile"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textViewName"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
@@ -167,11 +158,10 @@
         android:id="@+id/imgDobSelector"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="52dp"
         android:layout_marginTop="15dp"
         android:contentDescription="@string/calendar_icon"
         android:src="@drawable/select_dob"
-        app:layout_constraintStart_toEndOf="@+id/tvSelectDOB"
+        app:layout_constraintStart_toStartOf="@+id/editTextName"
         app:layout_constraintTop_toBottomOf="@+id/editTextName" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -179,56 +169,53 @@
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:layout_marginStart="18dp"
-        android:gravity="center"
         android:ems="5"
+        android:gravity="center"
         android:text="@string/dashes"
         android:textAppearance="?android:attr/textAppearanceLarge"
         app:layout_constraintBottom_toBottomOf="@id/imgDobSelector"
         app:layout_constraintStart_toEndOf="@+id/imgDobSelector"
         app:layout_constraintTop_toTopOf="@+id/imgDobSelector" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonCancelIns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/button_round"
-        android:text="@string/canceltext"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/capturedImage">
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonTakePhoto"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
+        android:layout_margin="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_round"
+        android:padding="8dp"
+        android:text="@string/take_photo"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@id/capturedImage"
+        app:layout_constraintStart_toStartOf="@id/capturedImage"
+        app:layout_constraintTop_toBottomOf="@id/capturedImage" />
+
+
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonTakePhoto"
-            android:layout_width="0dp"
-            android:layout_height="30dp"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
+            android:id="@+id/buttonAddOrUpdate"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="20dp"
             android:background="@drawable/button_round"
-            android:padding="8dp"
-            android:text="@string/take_photo"
-            android:textSize="12sp"
-            />
-    </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="48dp"
+            app:layout_constraintStart_toEndOf="@id/editTextMobile" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonAddOrUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/button_round"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonCancelIns"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="@id/buttonAddOrUpdate"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button_round"
+            android:text="@string/canceltext"
+            app:layout_constraintBottom_toBottomOf="@id/editTextMobile" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

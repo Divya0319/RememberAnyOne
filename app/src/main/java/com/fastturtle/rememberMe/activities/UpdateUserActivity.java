@@ -1,17 +1,16 @@
-package com.fastturtle.RememberAnyOne.activities;
+package com.fastturtle.rememberMe.activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -25,36 +24,26 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
+import androidx.core.content.ContextCompat;
 
-import com.fastturtle.RememberAnyOne.R;
-import com.fastturtle.RememberAnyOne.fragments.DatePickerFragment;
-import com.fastturtle.RememberAnyOne.helperClasses.Constants;
-import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
-import com.fastturtle.RememberAnyOne.helperClasses.Utils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.fragments.DatePickerFragment;
+import com.fastturtle.rememberMe.helperClasses.Constants;
+import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;
+import com.fastturtle.rememberMe.helperClasses.Utils;
 
 public class UpdateUserActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
         DatePickerDialog.OnDateSetListener {
 
-    AppCompatButton btnUpdate, btnCancel, btnCamera, btSelectImage;
+    AppCompatButton btnUpdate, btnCancel, btnCamera;
     AppCompatEditText etName, etEmail, etMobile;
     DatabaseHelper myDb;
     AppCompatTextView tvDOB, tvAge;
     AppCompatImageView capturedImage, imgDOBSelector;
     String sName, sAge, sEmail, sMobile, sDOB;
     int valAge;
-    int userId;
-    String imageUri;
-    String imageFilePath;
-    Uri capturedImageUri;
+    Bitmap bitmap, bitmapFromImageView;
+    int UserId;
 
     ActivityResultLauncher<Intent> takePhotoForResult, pickImageFromGalleryForResult;
 
@@ -84,7 +73,6 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         btnCamera = findViewById(R.id.buttonTakePhoto);
         btnUpdate = findViewById(R.id.buttonAddOrUpdate);
         btnCancel = findViewById(R.id.buttonCancelIns);
-        btSelectImage = findViewById(R.id.btImageSelector);
         imgDOBSelector = findViewById(R.id.imgDobSelector);
         btnCamera.setText(getString(R.string.take_new_photo));
         btnUpdate.setText(getString(R.string.update));
@@ -92,75 +80,35 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         btnCamera.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnUpdate.setOnClickListener(this);
-        btSelectImage.setOnClickListener(this);
         imgDOBSelector.setOnClickListener(this);
 
-        userId = i.getExtras().getInt("UserId");
+        UserId = i.getExtras().getInt("UserId");
+        byte[] byteArrayBmp = i.getByteArrayExtra("BITMAP_SHARED_KEY");
+        bitmap = Utils.getImage(byteArrayBmp);
         capturedImage = findViewById(R.id.capturedImage);
-        Cursor c = myDb.getAllDataUsingId(userId);
+        capturedImage.setImageBitmap(bitmap);
+        Cursor c = myDb.getAllDataUsingId(UserId);
 
-        if (c.moveToFirst()) {
-            do {
-                etName.setText(c.getString(c.getColumnIndexOrThrow(Constants.Name)));
-                tvAge.setText(c.getString(c.getColumnIndexOrThrow(Constants.Age)));
-                etEmail.setText(c.getString(c.getColumnIndexOrThrow(Constants.Email)));
-                etMobile.setText(c.getString(c.getColumnIndexOrThrow(Constants.Mobile_No)));
-                tvDOB.setText(c.getString(c.getColumnIndexOrThrow(Constants.DOB)));
-                imageUri = c.getString(c.getColumnIndexOrThrow(Constants.Key_Image));
+        if(Utils.onCreateOfUpdateScreenCalledFirstTime) {
+            if (c.moveToFirst()) {
+                do {
+                    etName.setText(c.getString(c.getColumnIndexOrThrow(Constants.Name)));
+                    tvAge.setText(c.getString(c.getColumnIndexOrThrow(Constants.Age)));
+                    etEmail.setText(c.getString(c.getColumnIndexOrThrow(Constants.Email)));
+                    etMobile.setText(c.getString(c.getColumnIndexOrThrow(Constants.Mobile_No)));
+                    tvDOB.setText(c.getString(c.getColumnIndexOrThrow(Constants.DOB)));
 
-            } while (c.moveToNext());
-        }
-        c.close();
-        capturedImageUri = Uri.parse(imageUri);
-        if(capturedImageUri.toString().contains("fileprovider")) {
-            ContentResolver cr = getContentResolver();
-            InputStream is = null;
-            try {
-                is = cr.openInputStream(capturedImageUri);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                } while (c.moveToNext());
             }
-            Bitmap bitmap = BitmapFactory.decodeStream(is);
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            capturedImage.setImageBitmap(bitmap);
+            c.close();
         }
-//        else {
-//            if (capturedImageUri != null) {
-//                String path = Utils.getPathFromUri(this, capturedImageUri);
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inSampleSize = 8;
-//                Bitmap bitmap = BitmapFactory.decodeFile(path);
-//                capturedImage.setImageBitmap(bitmap);
-//            }
-//        }
-
-
-
         takePhotoForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        ContentResolver cr = getApplicationContext().getContentResolver();
-                        InputStream is = null;
-                        try {
-                            is = cr.openInputStream(capturedImageUri);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                        if (result.getData() != null) {
+                            bitmap = (Bitmap) result.getData().getExtras().get("data");
+                            capturedImage.setImageBitmap(bitmap);
                         }
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        if (is != null) {
-                            try {
-                                is.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        capturedImage.setImageBitmap(bitmap);
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
                         Toast.makeText(getApplicationContext(), "User cancelled image capture", Toast.LENGTH_SHORT).show();
                     }
@@ -172,16 +120,54 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
                         if (result.getData() != null) {
                             Uri selectedImageUri = result.getData().getData();
                             if (selectedImageUri != null) {
-                                String path = Utils.getPathFromUri(this, selectedImageUri);
-                                BitmapFactory.Options options = new BitmapFactory.Options();
-                                options.inSampleSize = 8;
-                                Bitmap bitmap = BitmapFactory.decodeFile(path);
-                                capturedImage.setImageBitmap(bitmap);
+                                capturedImage.setImageURI(selectedImageUri);
+                                BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
+                                bitmap = drawable.getBitmap();
                             }
                         }
                     }
                 });
 
+        Utils.onCreateOfUpdateScreenCalledFirstTime = false;
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        bitmapFromImageView = ((BitmapDrawable) capturedImage.getDrawable()).getBitmap();
+        if (bitmapFromImageView != null)
+            outState.putByteArray("bitmap", Utils.getBytes(bitmapFromImageView));
+        if (!TextUtils.isEmpty(etName.getText()))
+            outState.putString("name", etName.getText().toString());
+        if (!tvDOB.getText().toString().isEmpty())
+            outState.putString("dob", tvDOB.getText().toString());
+        if (!tvAge.getText().toString().isEmpty() && !tvAge.getText().toString().equals("--"))
+            outState.putString("age", tvAge.getText().toString());
+        if (!TextUtils.isEmpty(etEmail.getText()))
+            outState.putString("email", etEmail.getText().toString());
+        if (!TextUtils.isEmpty(etMobile.getText()))
+            outState.putString("mobno", etMobile.getText().toString());
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("bitmap")) {
+            bitmap = Utils.getImage(savedInstanceState.getByteArray("bitmap"));
+            capturedImage.setImageBitmap(bitmap);
+        }
+        if (savedInstanceState.containsKey("name"))
+            etName.setText(savedInstanceState.getString("name"));
+        if (savedInstanceState.containsKey("dob"))
+            tvDOB.setText(savedInstanceState.getString("dob"));
+        if (savedInstanceState.containsKey("age"))
+            tvAge.setText(savedInstanceState.getString("age"));
+        if (savedInstanceState.containsKey("email"))
+            etEmail.setText(savedInstanceState.getString("email"));
+        if (savedInstanceState.containsKey("mobno"))
+            etMobile.setText(savedInstanceState.getString("mobno"));
     }
 
     @Override
@@ -190,25 +176,12 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             // //camera stuff
             PackageManager pm = getPackageManager();
             if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-                if (Utils.notHavePermissions(this, Constants.CAMERA_PERMISSIONS)) {
+                if (Utils.notHavePermissions(this, Constants.CAMERA_PERMISSION)) {
                     ActivityCompat.requestPermissions(UpdateUserActivity.this,
-                            new String[]{Constants.CAMERA_PERMISSIONS}, Constants.RC_CAMERA);
+                            new String[]{Constants.CAMERA_PERMISSION}, Constants.RC_CAMERA);
                 } else {
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    File photoFile = null;
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    if (photoFile != null) {
-                        Uri photoUri = FileProvider.getUriForFile(this,
-                                "com.fastturtle.RememberAnyOne.fileprovider", photoFile);
-                        capturedImageUri = photoUri;
-
-                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                        takePhotoForResult.launch(cameraIntent);
-                    }
+                    takePhotoForResult.launch(cameraIntent);
                 }
 
             } else {
@@ -220,7 +193,7 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             sEmail = etEmail.getText().toString();
             sMobile = etMobile.getText().toString();
             sDOB = tvDOB.getText().toString();
-            if (!sAge.isEmpty())
+            if (!sAge.isEmpty() && !sAge.equals("--"))
                 valAge = Integer.parseInt(sAge);
 
             if (sName.isEmpty() || sAge.isEmpty() || sEmail.isEmpty() || sMobile.isEmpty() || sDOB.isEmpty()) {
@@ -232,15 +205,16 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             } else if (valAge < 15 || valAge > 120) {
                 tvAge.setError("Age must be between 15 & 120");
             } else {
-                myDb.updateUser(userId, sName, sAge, sEmail, sMobile, sDOB, capturedImageUri.toString());
+                myDb.updateUser(UserId, sName, sAge, sEmail, sMobile, sDOB, Utils.getBytes(bitmap));
                 capturedImage.setImageResource(R.drawable.icon_capture);
                 Toast.makeText(getApplicationContext(), "User updated successfully", Toast.LENGTH_LONG).show();
                 etName.setText("");
                 tvAge.setText("--");
+                tvDOB.setText("");
                 etEmail.setText("");
                 etMobile.setText("");
-
-                onBackPressed();
+                bitmap = null;
+                bitmapFromImageView = null;
 
             }
 
@@ -248,13 +222,6 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             Intent i = new Intent(getApplicationContext(), DashBoardActivity.class);
             startActivity(i);
             finish();
-        } else if (v.getId() == R.id.btImageSelector) {
-            if (Utils.notHavePermissions(this, Constants.CAMERA_PERMISSIONS)) {
-                ActivityCompat.requestPermissions(UpdateUserActivity.this,
-                        new String[]{Constants.CAMERA_PERMISSIONS}, Constants.RC_CAMERA);
-            } else {
-                openImageChooser();
-            }
         } else if (v.getId() == R.id.imgDobSelector) {
             selectDate();
         }
@@ -274,19 +241,7 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         tvDOB.setText(new StringBuilder().append(dayOfMonth).append("-").append(monthOfYear).append("-").append(year));
-        tvAge.setText(String.valueOf(Utils.findAge(year, monthOfYear, dayOfMonth)));
-
-    }
-
-    public File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
-
-        File storageFile = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(timeStamp,
-                ".jpg",
-                storageFile);
-        imageFilePath = image.getAbsolutePath();
-        return image;
+        tvAge.setText(Utils.findAge(year, monthOfYear, dayOfMonth));
 
     }
 
@@ -296,29 +251,9 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         if (requestCode == Constants.RC_CAMERA) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (photoFile != null) {
-                    Uri photoUri = FileProvider.getUriForFile(this,
-                            "com.fastturtle.RememberAnyOne.fileprovider", photoFile);
-                    capturedImageUri = photoUri;
-
-                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                    takePhotoForResult.launch(cameraIntent);
-                }
-
+                takePhotoForResult.launch(cameraIntent);
             } else {
                 Toast.makeText(this, "Camera permission was not granted", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == Constants.RC_STORAGE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openImageChooser();
-            } else {
-                Toast.makeText(this, "Storage permission was not granted", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.helperClasses;
+package com.fastturtle.rememberMe.helperClasses;
 
 import android.Manifest;
 
@@ -11,7 +11,7 @@ public interface Constants {
     int NOTIFY_ID = 1;
 
     // Permission constants
-    String CAMERA_PERMISSIONS = Manifest.permission.CAMERA;
+    String CAMERA_PERMISSION = Manifest.permission.CAMERA;
     String[] CAMERA_STORAGE_PERMISSIONS = {Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -31,5 +31,6 @@ public interface Constants {
     String Mobile_No = "MobNo";
     String DOB = "Dob";
     String Key_Image = "key_image";
+    boolean onCreateOfUpdateActivityCalledFirstTime = true;
 
 }

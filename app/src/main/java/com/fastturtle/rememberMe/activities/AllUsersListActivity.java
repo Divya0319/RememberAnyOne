@@ -1,8 +1,9 @@
-package com.fastturtle.RememberAnyOne.activities;
+package com.fastturtle.rememberMe.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -17,12 +18,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.fastturtle.RememberAnyOne.R;
-import com.fastturtle.RememberAnyOne.adapters.AllUsersListAdapter;
-import com.fastturtle.RememberAnyOne.entities.Users;
-import com.fastturtle.RememberAnyOne.helperClasses.Constants;
-import com.fastturtle.RememberAnyOne.helperClasses.DatabaseHelper;
-import com.fastturtle.RememberAnyOne.helperClasses.Utils;
+import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.adapters.AllUsersListAdapter;
+import com.fastturtle.rememberMe.entities.Users;
+import com.fastturtle.rememberMe.helperClasses.Constants;
+import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;
+import com.fastturtle.rememberMe.helperClasses.Utils;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,7 @@ public class AllUsersListActivity extends AppCompatActivity {
     Cursor cursorUser;
     public AllUsersListAdapter listAdapter;
     Integer clickPosition = 0;
+    byte[] byteArray;
     public ArrayList<Users> userDetails;
     ListView listViewUser;
     AppCompatTextView textId;
@@ -47,6 +49,7 @@ public class AllUsersListActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
+        getWindow().setStatusBarColor(Color.parseColor("#C19240"));
         userDetails = new ArrayList<>();
         listViewUser = findViewById(R.id.listView);
         myDbHelper = new DatabaseHelper(this);
@@ -61,7 +64,7 @@ public class AllUsersListActivity extends AppCompatActivity {
                 u.setEmail(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Email)));
                 u.setMobileNo(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Mobile_No)));
                 u.setDob(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.DOB)));
-                u.setImagePathUri(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Key_Image)));
+                u.setImage(cursorUser.getBlob(cursorUser.getColumnIndexOrThrow(Constants.Key_Image)));
                 userDetails.add(u);
             } while (cursorUser.moveToNext());
         }
@@ -69,18 +72,18 @@ public class AllUsersListActivity extends AppCompatActivity {
         listViewUser.setLongClickable(true);
         listViewUser.setAdapter(listAdapter);
         cursorUser.close();
-        listViewUser.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                clickPosition = position;
-                Users u = new Users();
-                textId = view.findViewById(R.id.txtUserId);
-                String IdString = textId.getText().toString();
-                int intId = Integer.parseInt(IdString);
-                u.setId(intId);
-                registerForContextMenu(listViewUser);
-                return false;
-            }
+        listViewUser.setOnItemLongClickListener((parent, view, position, id) -> {
+            clickPosition = position;
+            Users u = new Users();
+            textId = view.findViewById(R.id.txtUserId);
+            String IdString = textId.getText().toString();
+            int intId = Integer.parseInt(IdString);
+            u.setId(intId);
+            ImageView imageView = view.findViewById(R.id.img);
+            Bitmap bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            byteArray = Utils.getBytes(bmp);
+            registerForContextMenu(listViewUser);
+            return false;
         });
 
     }
@@ -105,6 +108,7 @@ public class AllUsersListActivity extends AppCompatActivity {
                 // edit stuff here
                 Intent i = new Intent(getApplicationContext(), UpdateUserActivity.class);
                 i.putExtra("UserId", userDetails.get(clickPosition).getId());
+                i.putExtra("BITMAP_SHARED_KEY", userDetails.get(clickPosition).getImage());
                 startActivity(i);
 
                 return true;
@@ -118,7 +122,6 @@ public class AllUsersListActivity extends AppCompatActivity {
                 userDetails.remove(info.position);
                 myDbHelper.close();
                 listAdapter.notifyDataSetChanged();
-
 
                 return true;
             default:

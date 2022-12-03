@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.adapters;
+package com.fastturtle.rememberMe.adapters;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -20,10 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.res.ResourcesCompat;
 
-import com.fastturtle.RememberAnyOne.R;
-import com.fastturtle.RememberAnyOne.entities.Users;
-import com.fastturtle.RememberAnyOne.helperClasses.Utils;
+import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.entities.Users;
+import com.fastturtle.rememberMe.helperClasses.Utils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class AllUsersListAdapter extends ArrayAdapter<Users> {
         super(context, R.layout.list_single, userDetails);
         this.context = context;
         this.uDetails = userDetails;
-        typefaceForAll = Typeface.createFromAsset(context.getAssets(), "fonts/Exo-Medium.otf");
+        typefaceForAll = ResourcesCompat.getFont(context, R.font.exo_medium);
     }
 
     @NonNull
@@ -76,23 +77,7 @@ public class AllUsersListAdapter extends ArrayAdapter<Users> {
         holder.tvAge.setTypeface(typefaceForAll);
         holder.tvDOB.setTypeface(typefaceForAll);
 
-        Uri fetchedImageUri = Uri.parse(u.getImagePathUri());
-        Log.d("FileURI", fetchedImageUri.toString());
-        try {
-            if (fetchedImageUri != null) {
-                ContentResolver cr = context.getContentResolver();
-                InputStream is = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    holder.imgUser.setImageBitmap(ImageDecoder.decodeBitmap(ImageDecoder.createSource(cr, fetchedImageUri)));
-                } else {
-                    holder.imgUser.setImageBitmap(MediaStore.Images.Media.getBitmap(cr, fetchedImageUri));
-                }
-
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        holder.imgUser.setImageBitmap(Utils.getImage(u.getImage()));
         return convertView;
     }
 

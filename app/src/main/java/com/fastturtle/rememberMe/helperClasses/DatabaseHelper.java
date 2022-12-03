@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.helperClasses;
+package com.fastturtle.rememberMe.helperClasses;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + Constants.Table_Name + " (" + Constants.Id + " INTEGER PRIMARY KEY AUTOINCREMENT," + Constants.Name + " TEXT,"
-                + Constants.Age + " INTEGER," + Constants.Email + " TEXT," + Constants.Mobile_No + " INTEGER," + Constants.DOB + " TEXT," + Constants.Key_Image + " TEXT);");
+                + Constants.Age + " INTEGER," + Constants.Email + " TEXT," + Constants.Mobile_No + " INTEGER," + Constants.DOB + " TEXT," + Constants.Key_Image + " BLOB);");
     }
 
     @Override
@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertData(String name, String age, String email, String mobno, String dob, String imagePathUri) {
+    public void insertData(String name, String age, String email, String mobno, String dob, byte[] image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(Constants.Name, name);
@@ -32,13 +32,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(Constants.Email, email);
         cv.put(Constants.Mobile_No, mobno);
         cv.put(Constants.DOB, dob);
-        cv.put(Constants.Key_Image, imagePathUri);
+        cv.put(Constants.Key_Image, image);
         db.insert(Constants.Table_Name, null, cv);
         db.close();
     }
 
     public Cursor getAllData() {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + Constants.Table_Name, null);
     }
 
@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateUser(int id, String name, String age, String email, String mobno, String dob, String imagePathUri) {
+    public void updateUser(int id, String name, String age, String email, String mobno, String dob, byte[] image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         String strFilter = Constants.Id + "=" + id;
@@ -64,9 +64,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(Constants.Email, email);
         cv.put(Constants.Mobile_No, mobno);
         cv.put(Constants.DOB, dob);
-        cv.put(Constants.Key_Image, imagePathUri);
+        cv.put(Constants.Key_Image, image);
         db.update(Constants.Table_Name, cv, strFilter, null);
-        db.close();
     }
 
     public boolean checkDuplicateUser(String newEmail) {
@@ -82,7 +81,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         if(cursor != null)
             cursor.close();
-        db.close();
         return response;
     }
 

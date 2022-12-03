@@ -1,4 +1,4 @@
-package com.fastturtle.RememberAnyOne.helperClasses;
+package com.fastturtle.rememberMe.helperClasses;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    public static boolean onCreateOfUpdateScreenCalledFirstTime = true;
 
     public static boolean invalidEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
@@ -54,10 +56,10 @@ public class Utils {
 
         age = currentYear - DOBYear;
 
-        if(DOBMonth > currentMonth) {
+        if (DOBMonth > currentMonth) {
             --age;
-        } else if(DOBMonth == currentMonth) {
-            if(DOBDayOfMonth > todayDay) {
+        } else if (DOBMonth == currentMonth) {
+            if (DOBDayOfMonth > todayDay) {
                 --age;
             }
         }
@@ -66,9 +68,9 @@ public class Utils {
     }
 
     public static boolean notHavePermissions(Context ctx, String... permissions) {
-        if(permissions != null) {
-            for(String permission: permissions) {
-                if(ActivityCompat.checkSelfPermission(ctx, permission) != PackageManager.PERMISSION_GRANTED) {
+        if (permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(ctx, permission) != PackageManager.PERMISSION_GRANTED) {
                     return true;
                 }
             }
