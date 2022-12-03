@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.R;
 import com.fastturtle.rememberMe.entities.Users;
 import com.fastturtle.rememberMe.helperClasses.Utils;
 

@@ -42,5 +42,6 @@
     <string name="plus_91">+91</string>
     <string name="type_your_number">Type your number</string>
     <string name="send_otp">Send otp</string>
+    <string name="signout">Sign Out</string>
 
 </resources>

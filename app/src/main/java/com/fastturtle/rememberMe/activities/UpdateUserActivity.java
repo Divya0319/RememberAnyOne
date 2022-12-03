@@ -26,7 +26,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.R;
 import com.fastturtle.rememberMe.fragments.DatePickerFragment;
 import com.fastturtle.rememberMe.helperClasses.Constants;
 import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;

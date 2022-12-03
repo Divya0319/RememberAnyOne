@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fastturtle.rememberme">
+    package="com.fastturtle.rememberMe">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -17,19 +17,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".PhoneActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".activities.PhoneActivity"
+            android:screenOrientation="nosensor"
+            android:exported="false"/>
         <activity
-            android:name=".DashBoardActivity"
-            android:noHistory="true" />
+            android:name=".activities.DashBoardActivity" />
         <activity
-            android:name=".StartingActivity"
+            android:name=".activities.StartingActivity"
             android:exported="true"
+            android:screenOrientation="nosensor"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,17 +36,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AllUsersListActivity"
+            android:name=".activities.AllUsersListActivity"
             android:theme="@style/ListViewTheme" />
         <activity
-            android:name=".AddUserActivity"
+            android:name=".activities.AddUserActivity"
             android:theme="@style/DashBoardTheme" />
         <activity
-            android:name=".UpdateUserActivity"
+            android:name=".activities.UpdateUserActivity"
             android:theme="@style/AppBaseTheme" />
-        <activity
-            android:name=".PhoneAuthActivity"
-            android:theme="@style/AppThemeActionBar" />
     </application>
 
 </manifest>

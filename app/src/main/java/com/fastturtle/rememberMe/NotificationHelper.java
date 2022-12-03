@@ -16,7 +16,6 @@ import androidx.core.app.NotificationCompat;
 
 import com.fastturtle.rememberMe.activities.AllUsersListActivity;
 import com.fastturtle.rememberMe.helperClasses.Constants;
-import com.fastturtle.rememberme.R;
 
 public class NotificationHelper {
     private Context mContext;
@@ -57,7 +56,6 @@ public class NotificationHelper {
             mNotificationManager.createNotificationChannel(notificationChannel);
 
         }
-        assert mNotificationManager != null;
         mNotificationManager.notify(Constants.NOTIFY_ID, mBuilder.build());
 
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

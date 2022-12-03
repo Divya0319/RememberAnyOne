@@ -28,11 +28,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.fastturtle.rememberMe.NotificationHelper;
+import com.fastturtle.rememberMe.R;
 import com.fastturtle.rememberMe.fragments.DatePickerFragment;
 import com.fastturtle.rememberMe.helperClasses.Constants;
 import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;
 import com.fastturtle.rememberMe.helperClasses.Utils;
-import com.fastturtle.rememberme.R;
 
 public class AddUserActivity extends AppCompatActivity implements OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
         DatePickerDialog.OnDateSetListener {

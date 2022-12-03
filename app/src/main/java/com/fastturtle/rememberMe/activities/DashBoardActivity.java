@@ -8,11 +8,15 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
-import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 public class DashBoardActivity extends AppCompatActivity implements View.OnClickListener {
     AppCompatButton btAdd, btView;
+
+    FirebaseAuth firebaseAuth;
+    AppCompatButton btSignOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +25,13 @@ public class DashBoardActivity extends AppCompatActivity implements View.OnClick
 
         getWindow().setStatusBarColor(Color.parseColor("#3DA2C4"));
         btAdd = findViewById(R.id.buttonAddUser);
+
+        firebaseAuth = FirebaseAuth.getInstance();
         btView = findViewById(R.id.buttonViewUser);
+        btSignOut = findViewById(R.id.buttonSignOut);
         btAdd.setOnClickListener(this);
         btView.setOnClickListener(this);
+        btSignOut.setOnClickListener(this);
 
     }
 
@@ -38,6 +46,11 @@ public class DashBoardActivity extends AppCompatActivity implements View.OnClick
                 i = new Intent(getApplicationContext(), AllUsersListActivity.class);
                 startActivity(i);
                 break;
+            case R.id.buttonSignOut:
+                 firebaseAuth.signOut();
+                i = new Intent(getApplicationContext(), PhoneActivity.class);
+                startActivity(i);
+                finish();
         }
     }
 }
