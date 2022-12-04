@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -47,10 +48,20 @@ public class DashBoardActivity extends AppCompatActivity implements View.OnClick
                 startActivity(i);
                 break;
             case R.id.buttonSignOut:
-                 firebaseAuth.signOut();
-                i = new Intent(getApplicationContext(), PhoneActivity.class);
-                startActivity(i);
-                finish();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(DashBoardActivity.this)
+                        .setTitle("Are you sure you want to logout?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", (dialogInterface, i1) -> {
+                            firebaseAuth.signOut();
+                            Intent phoneIntent = new Intent(getApplicationContext(), PhoneActivity.class);
+                            startActivity(phoneIntent);
+                            finish();
+                        }).setNegativeButton("No", (dialogInterface, i12) -> {
+                            dialogInterface.dismiss();
+                        });
+                builder.show();
+
         }
     }
 }
