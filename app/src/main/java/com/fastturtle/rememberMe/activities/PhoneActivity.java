@@ -1,12 +1,14 @@
 package com.fastturtle.rememberMe.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -15,17 +17,27 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.fastturtle.rememberMe.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -44,6 +56,10 @@ public class PhoneActivity extends AppCompatActivity {
     private EditText etInput1, etInput2, etInput3, etInput4, etInput5, etInput6;
     private String verifId;
     private PhoneAuthProvider.ForceResendingToken resendToken;
+    private GoogleSignInClient googleSignInClient;
+    private SignInButton signInButton;
+
+    ActivityResultLauncher<Intent> googleSignInForResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +69,44 @@ public class PhoneActivity extends AppCompatActivity {
         init();
         addTextChangeListeners();
         resentOTPTVVisibility();
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.server_client_id))
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        googleSignInForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+
+            if (signInAccountTask.isSuccessful()) {
+                Toast.makeText(PhoneActivity.this, "Google Sign in successful", Toast.LENGTH_SHORT).show();
+
+                GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult();
+
+                if (googleSignInAccount != null) {
+                    AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+
+                    firebaseAuth.signInWithCredential(authCredential)
+                            .addOnCompleteListener(this, task -> {
+                                if (task.isSuccessful()) {
+                                    loadingProgressBar.setVisibility(View.INVISIBLE);
+                                    startActivity(new Intent(PhoneActivity.this, ProfileActivity.class)
+                                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+
+                                    Toast.makeText(PhoneActivity.this, "Firebase authentication successful", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    loadingProgressBar.setVisibility(View.INVISIBLE);
+                                    Toast.makeText(PhoneActivity.this, "Authentication failed : " + task.getException(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                }
+            }
+        });
+
+        googleBtnUi();
+
         btSendOtp.setOnClickListener(view -> {
 
             number = etPhoneNo.getText().toString().trim();
@@ -130,6 +184,39 @@ public class PhoneActivity extends AppCompatActivity {
         etInput4 = findViewById(R.id.otpEditText4);
         etInput5 = findViewById(R.id.otpEditText5);
         etInput6 = findViewById(R.id.otpEditText6);
+        signInButton = findViewById(R.id.signInButton);
+
+    }
+
+    private void googleBtnUi() {
+
+        signInButton.setOnClickListener(view -> {
+            Intent signInIntent = googleSignInClient.getSignInIntent();
+            googleSignInForResult.launch(signInIntent);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        });
+
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+//                tv.setTextSize(14);
+                tv.setText("Google");
+//                tv.setTypeface(null, Typeface.NORMAL);
+//                tv.setTextColor(ContextCompat.getColor(this, R.color.btn_color));
+//                tv.setBackground(ContextCompat.getDrawable(this, R.mipmap.btn_google_signin_dark_disabled));
+//                tv.setSingleLine(true);
+//                tv.setPadding(pixelToDp(50), pixelToDp(15), pixelToDp(15), pixelToDp(15));
+
+                return;
+            }
+        }
+
+    }
+
+    private int pixelToDp(int px) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, getResources().getDisplayMetrics());
     }
 
     private void resentOTPTVVisibility() {
@@ -282,10 +369,10 @@ public class PhoneActivity extends AppCompatActivity {
         public void afterTextChanged(Editable editable) {
             String text = editable.toString();
 
-            if(nextView != null && text.length() == 1) {
+            if (nextView != null && text.length() == 1) {
                 nextView.requestFocus();
             }
-            if(text.length() > 1) {
+            if (text.length() > 1) {
                 currentView.setText(String.valueOf(text.charAt(text.length() - 1)));
                 currentView.setSelection(1);
             }
@@ -303,8 +390,8 @@ public class PhoneActivity extends AppCompatActivity {
 
         @Override
         public boolean onKey(View view, int keyCode, KeyEvent event) {
-            if(event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.getText().toString().isEmpty()) {
-                if(prevView != null) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && currentView.getText().toString().isEmpty()) {
+                if (prevView != null) {
                     prevView.requestFocus();
                 }
                 return true;

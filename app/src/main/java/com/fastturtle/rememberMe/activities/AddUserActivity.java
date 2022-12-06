@@ -83,9 +83,10 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState.containsKey("bitmap"))
+        if (savedInstanceState.containsKey("bitmap")) {
             bitmap = Utils.getImage(savedInstanceState.getByteArray("bitmap"));
             capturedImage.setImageBitmap(bitmap);
+        }
         if (savedInstanceState.containsKey("name"))
             etName.setText(savedInstanceState.getString("name"));
         if (savedInstanceState.containsKey("dob"))
