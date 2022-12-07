@@ -24,18 +24,20 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.fastturtle.rememberMe.R;
 import com.fastturtle.rememberMe.fragments.DatePickerFragment;
+import com.fastturtle.rememberMe.helperClasses.BitmapCompressionTask;
 import com.fastturtle.rememberMe.helperClasses.Constants;
 import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;
 import com.fastturtle.rememberMe.helperClasses.Utils;
 
-public class UpdateUserActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
+public class UpdateUserActivity extends AppCompatActivity implements View.OnClickListener
+        , BitmapCompressionTask.BitmapCompressedListener
+        , ActivityCompat.OnRequestPermissionsResultCallback,
         DatePickerDialog.OnDateSetListener {
 
-    AppCompatButton btnUpdate, btnCancel, btnCamera;
+    AppCompatButton btnUpdate, btnCancel, btnCamera, btnSelectPhoto;
     AppCompatEditText etName, etEmail, etMobile;
     DatabaseHelper myDb;
     AppCompatTextView tvDOB, tvAge;
@@ -43,9 +45,11 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
     String sName, sAge, sEmail, sMobile, sDOB;
     int valAge;
     Bitmap bitmap, bitmapFromImageView;
-    int UserId;
+    int userId;
 
     ActivityResultLauncher<Intent> takePhotoForResult, pickImageFromGalleryForResult;
+    BitmapCompressionTask bitmapCompressionTask;
+//    Disposable disposable;
 
 
     @Override
@@ -73,6 +77,7 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         btnCamera = findViewById(R.id.buttonTakePhoto);
         btnUpdate = findViewById(R.id.buttonAddOrUpdate);
         btnCancel = findViewById(R.id.buttonCancelIns);
+        btnSelectPhoto = findViewById(R.id.buttonChooseFromGallery);
         imgDOBSelector = findViewById(R.id.imgDobSelector);
         btnCamera.setText(getString(R.string.take_new_photo));
         btnUpdate.setText(getString(R.string.update));
@@ -80,28 +85,27 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
         btnCamera.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         btnUpdate.setOnClickListener(this);
+        btnSelectPhoto.setOnClickListener(this);
         imgDOBSelector.setOnClickListener(this);
 
-        UserId = i.getExtras().getInt("UserId");
+        userId = i.getExtras().getInt("UserId");
         byte[] byteArrayBmp = i.getByteArrayExtra("BITMAP_SHARED_KEY");
         bitmap = Utils.getImage(byteArrayBmp);
         capturedImage = findViewById(R.id.capturedImage);
         capturedImage.setImageBitmap(bitmap);
-        Cursor c = myDb.getAllDataUsingId(UserId);
+        Cursor c = myDb.getAllDataUsingId(userId);
 
-        if(Utils.onCreateOfUpdateScreenCalledFirstTime) {
-            if (c.moveToFirst()) {
-                do {
-                    etName.setText(c.getString(c.getColumnIndexOrThrow(Constants.Name)));
-                    tvAge.setText(c.getString(c.getColumnIndexOrThrow(Constants.Age)));
-                    etEmail.setText(c.getString(c.getColumnIndexOrThrow(Constants.Email)));
-                    etMobile.setText(c.getString(c.getColumnIndexOrThrow(Constants.Mobile_No)));
-                    tvDOB.setText(c.getString(c.getColumnIndexOrThrow(Constants.DOB)));
+        if (c.moveToFirst()) {
+            do {
+                etName.setText(c.getString(c.getColumnIndexOrThrow(Constants.Name)));
+                tvAge.setText(c.getString(c.getColumnIndexOrThrow(Constants.Age)));
+                etEmail.setText(c.getString(c.getColumnIndexOrThrow(Constants.Email)));
+                etMobile.setText(c.getString(c.getColumnIndexOrThrow(Constants.Mobile_No)));
+                tvDOB.setText(c.getString(c.getColumnIndexOrThrow(Constants.DOB)));
 
-                } while (c.moveToNext());
-            }
-            c.close();
+            } while (c.moveToNext());
         }
+        c.close();
         takePhotoForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
@@ -120,16 +124,40 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
                         if (result.getData() != null) {
                             Uri selectedImageUri = result.getData().getData();
                             if (selectedImageUri != null) {
-                                capturedImage.setImageURI(selectedImageUri);
-                                BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
-                                bitmap = drawable.getBitmap();
+                                bitmapCompressionTask = new BitmapCompressionTask(UpdateUserActivity.this,UpdateUserActivity.this);
+                                bitmapCompressionTask.execute(selectedImageUri);
+//                                disposable = Single.fromCallable(() -> {
+//                                            bitmap = MediaStore.Images.Media.getBitmap(UpdateUserActivity.this.getContentResolver(), selectedImageUri);
+//                                            bitmap = Utils.getCompressedBitmap(bitmap, 300);
+//                                            return bitmap;
+//                                        })
+//                                        .subscribeOn(Schedulers.io())
+//                                        .observeOn(AndroidSchedulers.mainThread())
+//                                        .subscribe((Consumer<Object>) o -> {
+//                                            capturedImage.setImageBitmap((Bitmap) o);
+//                                            BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
+//                                            this.bitmap = drawable.getBitmap();
+//                                        });
                             }
                         }
                     }
                 });
 
-        Utils.onCreateOfUpdateScreenCalledFirstTime = false;
 
+    }
+
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        if (disposable != null)
+//            disposable.dispose();
+//    }
+
+    @Override
+    public void onBitmapCompressed(Bitmap bitmap) {
+        capturedImage.setImageBitmap(bitmap);
+        BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
+        this.bitmap = drawable.getBitmap();
     }
 
     @Override
@@ -205,16 +233,10 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             } else if (valAge < 15 || valAge > 120) {
                 tvAge.setError("Age must be between 15 & 120");
             } else {
-                myDb.updateUser(UserId, sName, sAge, sEmail, sMobile, sDOB, Utils.getBytes(bitmap));
-                capturedImage.setImageResource(R.drawable.icon_capture);
-                Toast.makeText(getApplicationContext(), "User updated successfully", Toast.LENGTH_LONG).show();
-                etName.setText("");
-                tvAge.setText("--");
-                tvDOB.setText("");
-                etEmail.setText("");
-                etMobile.setText("");
-                bitmap = null;
-                bitmapFromImageView = null;
+                myDb.updateUser(userId, sName, sAge, sEmail, sMobile, sDOB, Utils.getBytes(bitmap));
+                startActivity(new Intent(this, AllUsersListActivity.class));
+                Toast.makeText(getApplicationContext(), "User updated successfully", Toast.LENGTH_SHORT).show();
+                finish();
 
             }
 
@@ -224,11 +246,17 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
             finish();
         } else if (v.getId() == R.id.imgDobSelector) {
             selectDate();
+        } else if (v.getId() == R.id.buttonChooseFromGallery) {
+            openImageChooser();
         }
     }
 
     void openImageChooser() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        galleryIntent.setType("image/jpeg|image/png");
+        galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         pickImageFromGalleryForResult.launch(galleryIntent);
     }
 
@@ -241,7 +269,7 @@ public class UpdateUserActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
         tvDOB.setText(new StringBuilder().append(dayOfMonth).append("-").append(monthOfYear).append("-").append(year));
-        tvAge.setText(Utils.findAge(year, monthOfYear, dayOfMonth));
+        tvAge.setText(String.valueOf(Utils.findAge(year, monthOfYear, dayOfMonth)));
 
     }
 

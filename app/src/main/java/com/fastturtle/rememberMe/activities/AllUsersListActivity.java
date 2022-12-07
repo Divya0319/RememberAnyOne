@@ -26,6 +26,7 @@ import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;
 import com.fastturtle.rememberMe.helperClasses.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AllUsersListActivity extends AppCompatActivity {
 
@@ -37,6 +38,8 @@ public class AllUsersListActivity extends AppCompatActivity {
     public ArrayList<Users> userDetails;
     ListView listViewUser;
     AppCompatTextView textId;
+//    Disposable disposable;
+//    AdapterView.AdapterContextMenuInfo info;
 
     @Override
     public void onBackPressed() {
@@ -53,6 +56,7 @@ public class AllUsersListActivity extends AppCompatActivity {
         userDetails = new ArrayList<>();
         listViewUser = findViewById(R.id.listView);
         myDbHelper = new DatabaseHelper(this);
+//        fetchDataFromDatabaseInBackground();
         cursorUser = myDbHelper.getAllData();
 
         if (cursorUser.moveToFirst()) {
@@ -68,10 +72,10 @@ public class AllUsersListActivity extends AppCompatActivity {
                 userDetails.add(u);
             } while (cursorUser.moveToNext());
         }
+        cursorUser.close();
         listAdapter = new AllUsersListAdapter(AllUsersListActivity.this, userDetails);
         listViewUser.setLongClickable(true);
         listViewUser.setAdapter(listAdapter);
-        cursorUser.close();
         listViewUser.setOnItemLongClickListener((parent, view, position, id) -> {
             clickPosition = position;
             Users u = new Users();
@@ -85,8 +89,62 @@ public class AllUsersListActivity extends AppCompatActivity {
             registerForContextMenu(listViewUser);
             return false;
         });
-
     }
+
+//    private void fetchDataFromDatabaseInBackground() {
+//        disposable = Single.fromCallable(this::fetchDataFromDatabase
+//                )
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(this::updateUIAfterFetchComplete);
+//    }
+
+//    private void updateUIAfterFetchComplete(List<Users> users) {
+//        userDetails.addAll(users);
+//        listAdapter = new AllUsersListAdapter(AllUsersListActivity.this, userDetails);
+//        listViewUser.setLongClickable(true);
+//        listViewUser.setAdapter(listAdapter);
+//        listViewUser.setOnItemLongClickListener((parent, view, position, id) -> {
+//            clickPosition = position;
+//            Users u = new Users();
+//            textId = view.findViewById(R.id.txtUserId);
+//            String IdString = textId.getText().toString();
+//            int intId = Integer.parseInt(IdString);
+//            u.setId(intId);
+//            ImageView imageView = view.findViewById(R.id.img);
+//            Bitmap bmp = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+//            byteArray = Utils.getBytes(bmp);
+//            registerForContextMenu(listViewUser);
+//            return false;
+//        });
+//    }
+
+//    private void deleteUserInBackground(int id) {
+//        disposable = Single.fromCallable(() -> {
+//                    myDbHelper.delete(id);
+//                    myDbHelper.close();
+//                    return new Object();
+//                }).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(o -> updateUIAfterDelete());
+//
+//    }
+
+//    private void updateUIAfterDelete() {
+//        Toast.makeText(getApplicationContext(),
+//                "User with name " + userDetails.get(clickPosition).getName() + " deleted successfully",
+//                Toast.LENGTH_LONG).show();
+//        userDetails.remove(info.position);
+//        listAdapter.notifyDataSetChanged();
+//    }
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        if (disposable != null) {
+//            disposable.dispose();
+//        }
+//    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -97,6 +155,27 @@ public class AllUsersListActivity extends AppCompatActivity {
 
         }
     }
+
+//    private List<Users> fetchDataFromDatabase() {
+//        cursorUser = myDbHelper.getAllData();
+//        List<Users> users = new ArrayList<>();
+//        if (cursorUser.moveToFirst()) {
+//            do {
+//                Users u = new Users();
+//                u.setId(cursorUser.getInt(cursorUser.getColumnIndexOrThrow(Constants.Id)));
+//                u.setName(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Name)));
+//                u.setAge(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Age)));
+//                u.setEmail(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Email)));
+//                u.setMobileNo(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.Mobile_No)));
+//                u.setDob(cursorUser.getString(cursorUser.getColumnIndexOrThrow(Constants.DOB)));
+//                u.setImage(cursorUser.getBlob(cursorUser.getColumnIndexOrThrow(Constants.Key_Image)));
+//                users.add(u);
+//            } while (cursorUser.moveToNext());
+//        }
+//
+//        cursorUser.close();
+//        return users;
+//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -115,6 +194,7 @@ public class AllUsersListActivity extends AppCompatActivity {
 
             case R.id.delete:
                 // remove stuff here
+//                deleteUserInBackground(userDetails.get(clickPosition).getId());
                 myDbHelper.delete(userDetails.get(clickPosition).getId());
                 Toast.makeText(getApplicationContext(),
                         "User with name " + userDetails.get(clickPosition).getName() + " deleted successfully",

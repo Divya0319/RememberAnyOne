@@ -25,19 +25,21 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.fastturtle.rememberMe.NotificationHelper;
 import com.fastturtle.rememberMe.R;
 import com.fastturtle.rememberMe.fragments.DatePickerFragment;
+import com.fastturtle.rememberMe.helperClasses.BitmapCompressionTask;
 import com.fastturtle.rememberMe.helperClasses.Constants;
 import com.fastturtle.rememberMe.helperClasses.DatabaseHelper;
 import com.fastturtle.rememberMe.helperClasses.Utils;
 
-public class AddUserActivity extends AppCompatActivity implements OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback,
+public class AddUserActivity extends AppCompatActivity implements OnClickListener
+        , BitmapCompressionTask.BitmapCompressedListener
+        , ActivityCompat.OnRequestPermissionsResultCallback,
         DatePickerDialog.OnDateSetListener {
 
-    AppCompatButton btnAdd, btnCancel, btnCamera;
+    AppCompatButton btnAdd, btnCancel, btnCamera, btnSelectPhoto;
     AppCompatImageView capturedImage, imgCalendarIcon;
     AppCompatEditText etName, etEmail, etMobile;
     AppCompatTextView tvDOB, tvAge;
@@ -49,6 +51,8 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
     NotificationHelper notificationHelper;
 
     ActivityResultLauncher<Intent> takePhotoForResult, pickImageFromGalleryForResult;
+    BitmapCompressionTask bitmapCompressionTask;
+//    Disposable disposable;
 
     /**
      * Called when the activity is first created.
@@ -101,6 +105,13 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
     }
 
     @Override
+    public void onBitmapCompressed(Bitmap bitmap) {
+        capturedImage.setImageBitmap(bitmap);
+        BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
+        this.bitmap = drawable.getBitmap();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_or_update_user);
@@ -112,14 +123,17 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
         etEmail = findViewById(R.id.editTextEmail);
         etMobile = findViewById(R.id.editTextMobile);
         btnCamera = findViewById(R.id.buttonTakePhoto);
+        btnSelectPhoto = findViewById(R.id.buttonChooseFromGallery);
         btnAdd = findViewById(R.id.buttonAddOrUpdate);
         btnCancel = findViewById(R.id.buttonCancelIns);
         imgCalendarIcon = findViewById(R.id.imgDobSelector);
         capturedImage = findViewById(R.id.capturedImage);
         oldDrawable = capturedImage.getDrawable();
         notificationHelper = new NotificationHelper(this);
+
         btnAdd.setOnClickListener(this);
         btnCamera.setOnClickListener(this);
+        btnSelectPhoto.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         imgCalendarIcon.setOnClickListener(this);
 
@@ -143,15 +157,33 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
                         if (result.getData() != null) {
                             Uri selectedImageUri = result.getData().getData();
                             if (selectedImageUri != null) {
-                                capturedImage.setImageURI(selectedImageUri);
-                                BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
-                                bitmap = drawable.getBitmap();
+                                bitmapCompressionTask = new BitmapCompressionTask(AddUserActivity.this, AddUserActivity.this);
+                                bitmapCompressionTask.execute(selectedImageUri);
+//                                disposable = Single.fromCallable(() -> {
+//                                            bitmap = MediaStore.Images.Media.getBitmap(AddUserActivity.this.getContentResolver(), selectedImageUri);
+//                                            bitmap = Utils.getCompressedBitmap(bitmap, 300);
+//                                            return bitmap;
+//                                        })
+//                                        .subscribeOn(Schedulers.io())
+//                                        .observeOn(AndroidSchedulers.mainThread())
+//                                        .subscribe((Consumer<Object>) o -> {
+//                                            capturedImage.setImageBitmap((Bitmap) o);
+//                                            BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
+//                                            this.bitmap = drawable.getBitmap();
+//                                        });
                             }
                         }
                     }
                 });
 
     }
+
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        if (disposable != null)
+//            disposable.dispose();
+//    }
 
     @Override
     public void onClick(View v) {
@@ -212,13 +244,19 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
                 Toast.makeText(getBaseContext(), "Camera not available", Toast.LENGTH_LONG).show();
             }
 
+        } else if (v.getId() == R.id.buttonChooseFromGallery) {
+            openImageChooser();
         } else if (v.getId() == R.id.imgDobSelector) {
             selectDate();
         }
     }
 
     void openImageChooser() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        galleryIntent.setType("image/jpeg|image/png");
+        galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         pickImageFromGalleryForResult.launch(galleryIntent);
     }
 

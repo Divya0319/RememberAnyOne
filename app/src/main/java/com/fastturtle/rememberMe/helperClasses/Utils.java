@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    public static boolean onCreateOfUpdateScreenCalledFirstTime = true;
 
     public static boolean invalidEmail(String email) {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
@@ -32,6 +31,21 @@ public class Utils {
 
     public static Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
+    public static Bitmap getCompressedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
     public static String getPathFromUri(Context ctx, Uri contentUri) {
