@@ -13,7 +13,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.fastturtle.rememberme.R;
+import com.fastturtle.rememberMe.R;
+
 
 public class StartingActivity extends AppCompatActivity {
 
@@ -48,7 +49,7 @@ public class StartingActivity extends AppCompatActivity {
 
         new Handler().postDelayed(() -> {
 
-            Intent i = new Intent(getApplicationContext(), DashBoardActivity.class);
+            Intent i = new Intent(getApplicationContext(), PhoneActivity.class);
             startActivity(i);
             finish();
         }, 4000);

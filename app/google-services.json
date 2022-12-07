@@ -1,0 +1,93 @@
+{
+  "project_info": {
+    "project_number": "1073578592805",
+    "firebase_url": "https://devicetodevicepushnotifi-85216.firebaseio.com",
+    "project_id": "devicetodevicepushnotifi-85216",
+    "storage_bucket": "devicetodevicepushnotifi-85216.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073578592805:android:ea055a402463034d9c4dcc",
+        "android_client_info": {
+          "package_name": "com.fastturtle.rememberme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1073578592805-55vfreeuoa47ou4t2td9m4s1n3htf7tq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fastturtle.rememberme",
+            "certificate_hash": "377eaf664505fb643cbfffdaa676ffa447c24bc7"
+          }
+        },
+        {
+          "client_id": "1073578592805-ghg08a3qdpir19istkgk4vuslqsnbj4s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fastturtle.rememberme",
+            "certificate_hash": "0eabfabbcc7aed4e24f3428a245af9274ec368ce"
+          }
+        },
+        {
+          "client_id": "1073578592805-410j7ue3a2e95idr8vplarjp8uq4gc7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7loyHs2yU-AvgZPeOcF0KVmuqZC9_nfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1073578592805-410j7ue3a2e95idr8vplarjp8uq4gc7b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073578592805:android:9b59bb35265724c0",
+        "android_client_info": {
+          "package_name": "com.reviveapps.devicetodevicepushnotification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1073578592805-5n2up0474ga6g09qagscf90buvrf2e2l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reviveapps.devicetodevicepushnotification",
+            "certificate_hash": "9bbe9db6d8bcc258bb90baa9a1ec2da3b2d0c143"
+          }
+        },
+        {
+          "client_id": "1073578592805-410j7ue3a2e95idr8vplarjp8uq4gc7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7loyHs2yU-AvgZPeOcF0KVmuqZC9_nfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1073578592805-410j7ue3a2e95idr8vplarjp8uq4gc7b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fastturtle.rememberme">
+    package="com.fastturtle.rememberMe">
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -16,12 +18,26 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.fastturtle.rememberMe.activities.DashBoardActivity"
-            android:noHistory="true">
+            android:name=".activities.ProfileActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
         <activity
-            android:name="com.fastturtle.rememberMe.activities.StartingActivity"
+            android:name=".activities.PhoneActivity"
+            android:exported="false"
+            android:screenOrientation="nosensor" />
+        <activity android:name=".activities.DashBoardActivity" />
+        <activity
+            android:name=".activities.StartingActivity"
             android:exported="true"
+            android:screenOrientation="nosensor"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,17 +45,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.fastturtle.rememberMe.activities.AllUsersListActivity"
+            android:name=".activities.AllUsersListActivity"
             android:theme="@style/ListViewTheme" />
         <activity
-            android:name="com.fastturtle.rememberMe.activities.AddUserActivity"
+            android:name=".activities.AddUserActivity"
             android:theme="@style/DashBoardTheme" />
         <activity
-            android:name="com.fastturtle.rememberMe.activities.UpdateUserActivity"
+            android:name=".activities.UpdateUserActivity"
             android:theme="@style/AppBaseTheme" />
 
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

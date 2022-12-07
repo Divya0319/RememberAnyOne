@@ -31,6 +31,6 @@ public interface Constants {
     String Mobile_No = "MobNo";
     String DOB = "Dob";
     String Key_Image = "key_image";
-    boolean onCreateOfUpdateActivityCalledFirstTime = true;
+    String deviceVerificationApiKey = "AIzaSyC5oBud9niA1oaZlcPTm3CtxTyXfzffmPU";
 
 }
