@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'com.google.gms.google-services'
 
+def apiKeyPropertiesFile= rootProject.file("apikeys.properties")
+def apiKeyProperties = new Properties()
+apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
+
 android {
     compileSdkVersion 33
 
@@ -9,8 +13,9 @@ android {
         applicationId "com.fastturtle.rememberme"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 13
+        versionCode 14
         versionName "1.2.3.0"
+        buildConfigField("String", "FIREBASE_WEB_CLIENT_ID", apiKeyProperties['FIREBASE_WEB_CLIENT_ID'])
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8

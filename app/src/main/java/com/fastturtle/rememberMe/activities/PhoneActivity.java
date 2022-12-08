@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.fastturtle.rememberMe.BuildConfig;
 import com.fastturtle.rememberMe.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -71,7 +72,7 @@ public class PhoneActivity extends AppCompatActivity {
         resentOTPTVVisibility();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.server_client_id))
+                .requestIdToken(BuildConfig.FIREBASE_WEB_CLIENT_ID)
                 .requestEmail()
                 .build();
 

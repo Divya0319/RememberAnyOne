@@ -9,3 +9,4 @@ app/build
 .externalNativeBuild
 app/release/*
 /release
+apikeys.properties

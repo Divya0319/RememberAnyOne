@@ -45,7 +45,6 @@
     <string name="signout">Sign Out</string>
     <string name="default_notification_channel_id">1</string>
     <string name="signInWithGoogle">Sign in with Google</string>
-    <string name="server_client_id">1073578592805-410j7ue3a2e95idr8vplarjp8uq4gc7b.apps.googleusercontent.com</string>
     <string name="logout">Logout</string>
     <string name="select_photo">Select Photo</string>
 
