@@ -9,7 +9,7 @@ apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
 android {
     compileSdkVersion 33
     /** Below block is used to add signing key to release build, when aab or apk is generated using
-     * Gradle CLI commands
+     * Gradle CLI commands(./gradlew assembleRelease - will generate signed apk)
      */
     signingConfigs {
         release {
