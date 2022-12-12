@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
@@ -25,6 +26,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.BitmapCompat;
 
 import com.fastturtle.rememberMe.NotificationHelper;
 import com.fastturtle.rememberMe.R;
@@ -106,6 +108,9 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
 
     @Override
     public void onBitmapCompressed(Bitmap bitmap) {
+        int sizeInKb = BitmapCompat.getAllocationByteCount(bitmap);
+        sizeInKb = sizeInKb / 1024;
+        Log.d("TAG", "onBitmapCompressed: size after compression " + sizeInKb);
         capturedImage.setImageBitmap(bitmap);
         BitmapDrawable drawable = (BitmapDrawable) capturedImage.getDrawable();
         this.bitmap = drawable.getBitmap();
@@ -156,6 +161,9 @@ public class AddUserActivity extends AppCompatActivity implements OnClickListene
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
                             Uri selectedImageUri = result.getData().getData();
+                            float beforeCompressionSize = Utils.getImageSize(this, selectedImageUri);
+                            beforeCompressionSize = beforeCompressionSize / 1024.0f;
+                            Log.d("TAG", "onCreate: size before compression " + beforeCompressionSize);
                             if (selectedImageUri != null) {
                                 bitmapCompressionTask = new BitmapCompressionTask(AddUserActivity.this, AddUserActivity.this);
                                 bitmapCompressionTask.execute(selectedImageUri);
