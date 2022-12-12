@@ -20,7 +20,7 @@
     <string name="enter_email">Enter E-mail:</string>
     <string name="enter_mobno">Enter Mob.No. </string>
     <string name="enter_credentials">Enter Your Credentials</string>
-    <string name="select_dob">Select DOB</string>
+    <string name="select_dob">Select DOB:</string>
     <string name="calendar_icon">Calendar Icon</string>
     <string name="canceltext">Cancel</string>
     <string name="name">Name:</string>
