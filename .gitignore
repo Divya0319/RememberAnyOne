@@ -10,3 +10,4 @@ app/build
 app/release/*
 /release
 apikeys.properties
+signing.properties
