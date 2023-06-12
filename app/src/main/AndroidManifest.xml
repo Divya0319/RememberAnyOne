@@ -17,22 +17,11 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".activities.ProfileActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
 
-        <activity
-            android:name=".activities.PhoneActivity"
-            android:exported="false"
-            android:screenOrientation="nosensor" />
         <activity android:name=".activities.DashBoardActivity" />
         <activity
             android:name=".activities.StartingActivity"

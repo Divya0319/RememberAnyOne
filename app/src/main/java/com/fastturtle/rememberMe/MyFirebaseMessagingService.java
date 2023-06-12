@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.fastturtle.rememberMe.activities.AddUserActivity;
-import com.fastturtle.rememberMe.activities.DashBoardActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 

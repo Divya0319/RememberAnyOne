@@ -49,7 +49,7 @@ public class StartingActivity extends AppCompatActivity {
 
         new Handler().postDelayed(() -> {
 
-            Intent i = new Intent(getApplicationContext(), PhoneActivity.class);
+            Intent i = new Intent(getApplicationContext(), DashBoardActivity.class);
             startActivity(i);
             finish();
         }, 4000);

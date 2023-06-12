@@ -19,6 +19,7 @@
 -keepclassmembers class com.fastturtle.rememberMe.activities.** { *; }
 -keepattributes *Annotation*, Signature, Exception
 
+# below lines remove log statements from project before release
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
     public static int v(...);
